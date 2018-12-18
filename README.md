@@ -65,7 +65,7 @@ In order to tell *maobi* these values, you need to edit the add-on configuration
 The following GIF illustrates where to find the configuration:
 
 <p align="center">
-  <img src="https://raw.githubusercontent.com/Rentier/anki-maobi/master/img/config.gif>
+  <img src="https://raw.githubusercontent.com/Rentier/anki-maobi/master/img/config.gif">
 </p>
 
 The configuration itself is written in JSON. The default configuration is
