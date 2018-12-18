@@ -60,7 +60,7 @@ An example deck with example notes can be found in `data/Maobi.apkg` .
 
 Before using *maobi*, it has to be specified for which decks and templates the add-on should be enabled. The field that contains the character to write also has to be given.
 
-In order to tell *maobi* these values, you need to edit the add-on configuration. For that, go to the Addons-Config via **Tools** → **Add-ons**. Select **maobi** and then click on **Config**.
+In order to tell *maobi* these values, you need to edit the add-on configuration. For that, go to the Addons-Config via **Tools** → **Add-ons**. Select **maobi - Chinese Hanzi Writing Quizzes in Anki** and then click on **Config**.
 
 The configuration itself is written in JSON. The default configuration is
 
@@ -140,6 +140,17 @@ Yes, it does. *maobi* is bundled with the character data from the [Hanzi Writer 
 ### Why is this add-on so large?
 
 In order to generate the quizzes and display characters, stroke information is needed. Although the character data for one Hanzi is relatively small, it adds up when you support over 9000 characters. I already compressed the data to reduce the footprint.
+
+## Change log
+
+### 0.2.0
+
+- Change configuration to enable different fields for the same deck, e.g. to quiz simplified and traditional.
+- Make grid size configurable
+
+### 0.1.0 
+
+- First release
 
 ## License
 
