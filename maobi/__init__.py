@@ -4,12 +4,14 @@ import sys
 from zipfile import ZipFile
 
 from anki.hooks import addHook
-
+from anki.cards import Card
 from aqt import mw
 
 PATH_MAOBI = os.path.dirname(os.path.realpath(__file__))
 PATH_HANZI_WRITER = os.path.join(PATH_MAOBI, "hanzi-writer.min.js")
 PATH_CHARACTERS = os.path.join(PATH_MAOBI, "characters.zip")
+
+DEFAULT_SIZE = 200
 
 TEMPLATE = Template("""
 $html
@@ -19,13 +21,13 @@ $html
 <script>
 onShownHook.push(function () {
     var writer = HanziWriter.create('character-target-div', '$character', {
-    width: 150,
-    height: 150,
+    width: $size,
+    height: $size,
     showCharacter: false,
     showOutline: false,
     showHintAfterMisses: 1,
     highlightOnComplete: true,
-    padding: 5,
+    padding: 0,
     charDataLoader: function(char, onComplete) {
     var charData = $character_data;
         onComplete(charData);
@@ -36,31 +38,38 @@ onShownHook.push(function () {
 </script>
 """)
 
-def prepare(html: str, card: str, context: str) -> str:
+def prepare(html: str, card: Card, context: str) -> str:  
     # Only show the quiz on the front side, else it can lead to rendering issues
     if context not in {"reviewQuestion", "clayoutQuestion", "previewQuestion"}:
         return html
 
     # This reads from the config.json in the addon folder
     config = mw.addonManager.getConfig(__name__)
+    debug = config.get("debug", False)
+    decks = config["decks"]
+
+    size = config.get("size", DEFAULT_SIZE)
 
     # Only show quiz when the addon is enabled for this deck
-    decks = config["decks"]
     deck_name = mw.col.decks.current()["name"]
+    template_name = card.template()["name"]
 
-    if deck_name not in decks:
-        return html
-
-    # Only show quiz when the addon is enabled for this note type
-    note_types = config["note_types"]
     note = card.note()
     note_type = note.model()["name"]
 
-    if note_type not in note_types:
+    # Search for the correct configuration
+    for deck in decks:
+        # Break if we find it
+        if deck["name"] == deck_name and deck["template"] == template_name:
+            break
+    else:
+        # Return if we did not find it
+        if debug:
+            error(f"No configuration found for deck: '{deck_name}' and template '{template_name}")
         return html
     
     # Get the character that will be quizzed from the note
-    field_name = config["field_name"]
+    field_name = deck["field"]
 
     # Check that the field is really there
     if field_name not in note:
@@ -89,11 +98,14 @@ def prepare(html: str, card: str, context: str) -> str:
     with open(PATH_HANZI_WRITER, "r") as f:
         hanzi_writer_script = f.read()
 
+
+
     data = {
         "html": html,
         "hanzi_writer_script": hanzi_writer_script,
         "character": character,
         "character_data": character_data,
+        "size": size,
     }
 
     result = TEMPLATE.substitute(data)

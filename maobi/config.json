@@ -1,9 +1,10 @@
 {
     "decks": [
-
+        {
+            "name": "Chinese (basic)",
+            "template": "Recall",
+            "field": "Hanzi"
+        }
     ],
-    "note_types": [
-
-    ],
-    "field_name": "Hanzi"
+    "size": 200
 }

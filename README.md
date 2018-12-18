@@ -58,70 +58,60 @@ An example deck with example notes can be found in `data/Maobi.apkg` .
 
 ### Configure the decks and note types for which *maobi* is enabled
 
-Before using *maobi*, it has to be specified for which decks and note types the add-on should be enabled. The field that contains the character to write also has to be specified.
+Before using *maobi*, it has to be specified for which decks and templates the add-on should be enabled. The field that contains the character to write also has to be given.
 
 In order to tell *maobi* these values, you need to edit the add-on configuration. For that, go to the Addons-Config via **Tools** → **Add-ons**. Select **maobi** and then click on **Config**.
 
-The following GIF illustrates where to find the configuration:
-
-<p align="center">
-  <img src="https://raw.githubusercontent.com/Rentier/anki-maobi/master/img/config.gif">
-</p>
-
 The configuration itself is written in JSON. The default configuration is
 
-```
-{
-    "decks": [
+    {
+        "decks": [
+            {
+                "name": "Chinese (basic)",
+                "template": "Recall",
+                "field": "Hanzi"
+            }
+        ],
+        "size": 200
+    }
 
-    ],
-    "note_types": [
-
-    ],
-    "field_name": "Hanzi"
-}
-```
-
-The following paragraphs explain the values in detail.
+The following paragraphs explains the values in detail.
 
 #### Decks
 
-This specifies for which decks *maobi* should be enabled. It expects a list of *full* deck name strings. The full name is the name you get when you try to rename a deck. For instance, in order to enable it for the decks `Chinese::Characters` and `Heisig Simplified Hanzi`, the config looks like
+`decks` contains a list of configurations that specify for which deck `name` and which `template` (a template is also known as card type) and `field` the addon should be activated. This format allows you to specify different fields for the same or different decks, e.g. to use simplified and traditional Hanzi in one deck.
 
-```
-{
-    "decks": [
-        "Chinese::Characters",
-        "Heisig Simplified Hanzi"
-    ],
-    ...
-}
-```
+<dl>
+  <dt>name</dt>
+  <dd>This specifies for which decks <em>maobi</em> should be enabled. It expects a <b>full</b> deck name string. The full name is the name you get when you try to rename a deck.</dd>
 
-#### Note types
+  <dt>template</dt>
+  <dd>Name of the template (card type) this configuration should be activated for.</dd>
 
-This specifies for which note types *maobi* should be enabled. It expects a list of note type name strings. For instance, in order to enable it for the note types `Writing` and `Character`, the config looks like
+  <dt>field</dt>
+  <dd>The name of the field that should be used to quiz.</dd>
+</dl>
 
-```
-{
-    "note_types": [
-        "Writing",
-        "Character"
-    ],
-    ...
-}
-```
+The following configuration enables *maobi* for the deck `Chinese (basic)` with the template `Recall` as well as `Chinese::Heisig Traditional Chinese` with the template `Recognition`. The first uses simplified Hanzi, the latter traditional ones.
 
-#### Field name
+    {
+        "decks": [
+            {
+                "name": "Chinese (basic)",
+                "template": "Recall",
+                "field": "Hanzi"
+            },
+            {
+                "name": "Chinese::Heisig Traditional Chinese",
+                "template": "Recognition",
+                "field": "Traditional"
+            }
+        ]
+    }
 
-The field name tells the add-on which field contains the character that should be quizzed. If for instance, the character is in the `Hanzi` field, then the config looks like
+#### size
 
-```
-{
-    ...,
-    "field_name": "Hanzi"
-}
-```
+This specifies the size of the quiz box in px (default 200).
 
 ## Disclaimer
 
