@@ -1,9 +1,9 @@
 # anki-maobi
 
-`máobĭ` (毛笔) is an Anki add-on to create cards with writing quizzes for Hanzi (Chinese characters). Have a look:
+*máobĭ* (毛笔) is an Anki add-on to create cards with writing quizzes for Hanzi (Chinese characters). Have a look:
 
 <p align="center">
-  <img src="img/maobi.gif">
+  <img src="https://raw.githubusercontent.com/Rentier/anki-maobi/master/img/maobi.gif">
 </p>
 
 ## Motivation
@@ -28,7 +28,7 @@ In order to use *maobi*, you need to follow these simple steps:
 
 ### Download the add-on from the Anki homepage
 
-Use the code found on the [maobi Anki page](https://ankiweb.net/shared/upload?id=931477147).
+Use the code found on the [maobi Anki page](https://ankiweb.net/shared/info/931477147).
 
 ### Have a deck which contains character notes
 
@@ -65,7 +65,7 @@ In order to tell *maobi* these values, you need to edit the add-on configuration
 The following GIF illustrates where to find the configuration:
 
 <p align="center">
-  <img src="img/config.gif">
+  <img src="https://raw.githubusercontent.com/Rentier/anki-maobi/master/img/maobi.gif>
 </p>
 
 The configuration itself is written in JSON. The default configuration is
@@ -153,7 +153,7 @@ In order to generate the quizzes and display characters, stroke information is n
 
 ## License
 
-**maobi** is released under an [MIT](https://raw.githubusercontent.com/rentier/anki-maobi/master/LICENSE.txt) license.
+*maobi* is released under an [MIT](https://raw.githubusercontent.com/rentier/anki-maobi/master/LICENSE.txt) license.
 
 ### Third-party
 
