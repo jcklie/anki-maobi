@@ -149,7 +149,15 @@ Yes, it does. *maobi* is bundled with the character data from the [Hanzi Writer 
 
 In order to generate the quizzes and display characters, stroke information is needed. Although the character data for one Hanzi is relatively small, it adds up when you support over 9000 characters. I already compressed the data to reduce the footprint.
 
+### Using the mouse for writing is really uncomfy, is there a better way?
+
+Yes. I personally use a Wacom graphics tablet, e.g. the [Wacom Intuos](https://www.wacom.com/en-us/products/pen-tablets/wacom-intuos).
+
 ## Change log
+
+### 0.2.1
+
+- Change default configuration to use example deck parameters
 
 ### 0.2.0
 
