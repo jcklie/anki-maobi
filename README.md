@@ -22,9 +22,16 @@ I did not design the writing component, it comes from the awesome [Hanzi Writer]
 
 The chinese character and stroke order data used by *Hanzi Writer* is derived from the [Make me a Hanzi](https://github.com/skishore/makemeahanzi). The data can be found in the [Hanzi Writer Data](https://github.com/chanind/hanzi-writer-data) repo.
 
+## Quickstart
+
+1. Install the addon via the code found on the [maobi Anki page](https://ankiweb.net/shared/info/931477147).
+2. Download and import the [example deck](https://github.com/Rentier/anki-maobi/blob/master/data/Maobi.apkg).
+3. Restart Anki.
+4. Open the deck and start writing!
+
 ## Configuration
 
-In order to use *maobi*, you need to follow these simple steps:
+In order to use *maobi* for your own deck, you need to follow these simple steps:
 
 ### Download the add-on from the Anki homepage
 
@@ -67,13 +74,14 @@ The configuration itself is written in JSON. The default configuration is
     {
         "decks": [
             {
-                "name": "Chinese (basic)",
-                "template": "Recall",
+                "name": "Maobi",
+                "template": "Recognition",
                 "field": "Hanzi"
             }
         ],
         "size": 200
     }
+
 
 The following paragraphs explains the values in detail.
 

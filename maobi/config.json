@@ -1,8 +1,8 @@
 {
     "decks": [
         {
-            "name": "Chinese (basic)",
-            "template": "Recall",
+            "name": "Maobi",
+            "template": "Recognition",
             "field": "Hanzi"
         }
     ],
