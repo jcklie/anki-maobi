@@ -63,7 +63,9 @@ onShownHook.push(function () {
 DeckConfig = namedtuple("DeckConfig", ["name", "template", "field"])
 
 class MaobiException(Exception):
-    pass
+
+    def __init__(self, message):
+        super(MaobiException, self).__init__(message)
 
 class MaobiConfig:
 
@@ -102,7 +104,7 @@ def maobi_hook(html: str, card: Card, context: str) -> str:
         character = _get_character(card, deck, config)
         character_data = _load_character_data(character)
     except MaobiException as e:
-        _error(e.message)
+        _error(str(e))
         return html
 
     # Style the character div depending on the configuration
