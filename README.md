@@ -154,16 +154,8 @@ This specifies the size of the quiz box in px (default 200).
 
 This specifies the type of grid background that will be used. Currently available is `rice` or `field`:
 
-##### rice
-
-<p style="outline-color: black; outline-style: solid; outline-width: 1px; outline-offset: -1px; display: inline-block">
-  <img src="maobi/rice.svg">
-</p>
-
-##### field
-
-<p style="outline-color: black; outline-style: solid; outline-width: 1px; outline-offset: -1px; display: inline-block">
-  <img src="maobi/field.svg">
+<p align="center">
+  <img src="img/grids.svg">
 </p>
 
 The default is `rice`. In order to not use any grid, you can specify `empty` as the `grid` value.
