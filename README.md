@@ -156,11 +156,15 @@ This specifies the type of grid background that will be used. Currently availabl
 
 ##### rice
 
-![rice](maobi/rice.svg)
+<p style="outline-color: black; outline-style: solid; outline-width: 1px; outline-offset: -1px; display: inline-block">
+  <img src="maobi/rice.svg">
+</p>
 
 ##### field
 
-![field](maobi/field.svg)
+<p style="outline-color: black; outline-style: solid; outline-width: 1px; outline-offset: -1px; display: inline-block">
+  <img src="maobi/field.svg">
+</p>
 
 The default is `rice`. In order to not use any grid, you can specify `empty` as the `grid` value.
 
