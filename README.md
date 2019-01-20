@@ -1,5 +1,7 @@
 # anki-maobi
 
+[![Code style: black](https://img.shields.io/badge/code%20style-black-000000.svg)](https://github.com/ambv/black)
+
 *máobĭ* (毛笔) is an Anki add-on to create cards with writing quizzes for Hanzi (Chinese characters). Have a look:
 
 <p align="center">
@@ -64,7 +66,7 @@ time from creating cards and looking up definitions.
 
 ### Create/alter a card type
 
-In order to let *maobi* insert the quiz into a card, it needs to contain
+In order to let *maobi* insert the quiz into a card, its template need to contain
 
     <div id="character-target-div"></div>
 
@@ -86,79 +88,28 @@ An example deck with example notes can be found in `data/Maobi.apkg` .
 Before using *maobi*, it has to be specified for which decks and templates the add-on should be 
 enabled. The field that contains the character to write also has to be given.
 
-In order to tell *maobi* these values, you need to edit the add-on configuration. For that, go to 
-the Addons-Config via **Tools** → **Add-ons**. Select **maobi - Chinese Hanzi Writing Quizzes in Anki** 
-and then click on **Config**.
-
-The configuration itself is written in JSON. The default configuration is
-
-    {
-        "decks": [
-            {
-                "name": "Maobi",
-                "template": "Recognition",
-                "field": "Hanzi"
-            }
-        ],
-        "size": 200,
-        "grid": "rice"
-    }
-
-The following paragraphs explains the values in detail.
-
-#### Decks
-
-`decks` contains a list of configurations that specify for which deck `name` and which `template` 
-(a template is also known as card type) and `field` the addon should be activated. This format allows
- you to specify different fields for the same or different decks, e.g. to use simplified and traditional
-  Hanzi in one deck.
-
-<dl>
-  <dt>name</dt>
-  <dd>
-  This specifies for which decks <em>maobi</em> should be enabled. It expects a <b>full</b> deck
-  name string. The full name is the name you get when you try to rename a deck.
-   </dd>
-
-  <dt>template</dt>
-  <dd>Name of the template (card type) this configuration should be activated for.</dd>
-
-  <dt>field</dt>
-  <dd>The name of the field that should be used to quiz.</dd>
-</dl>
-
-The following configuration enables *maobi* for the deck `Chinese (basic)` with the template `Recall` 
-as well as `Chinese::Heisig Traditional Chinese` with the template `Recognition`. The first uses 
-simplified Hanzi, the latter traditional ones.
-
-    {
-        "decks": [
-            {
-                "name": "Chinese (basic)",
-                "template": "Recall",
-                "field": "Hanzi"
-            },
-            {
-                "name": "Chinese::Heisig Traditional Chinese",
-                "template": "Recognition",
-                "field": "Traditional"
-            }
-        ]
-    }
-
-#### size
-
-This specifies the size of the quiz box in px (default 200).
-
-#### grid
-
-This specifies the type of grid background that will be used. Currently available is `rice` or `field`:
+In order to tell *maobi* these values, you need to edit the add-on configuration. This can be done in the Card Layout view:
 
 <p align="center">
-  <img src="img/grids.svg">
+  <img src="https://raw.githubusercontent.com/Rentier/anki-maobi/master/img/config.png">
 </p>
 
-The default is `rice`. In order to not use any grid, you can specify `empty` as the `grid` value.
+The configuration is done per deck and card template. The following paragraphs explains the values in detail.
+
+<dl>
+  <dt>Field</dt>
+  <dd>The name of the field that should be used to quiz.</dd>
+  
+  <dt>Grid</dt>
+  <dd>This specifies the type of grid background that will be used. Currently available are `None`, `Rice` or `Field`:
+    <p align="center">
+      <img src="img/grids.svg">
+    </p> 
+  </dd>  
+
+  <dt>Size</dt>
+  <dd>This specifies the size of the quiz box in px (default 200).</dd>
+</dl>
 
 ## Disclaimer
 
@@ -200,6 +151,12 @@ already compressed the data to reduce the footprint.
 Yes. I personally use a Wacom graphics tablet, e.g. the [Wacom Intuos](https://www.wacom.com/en-us/products/pen-tablets/wacom-intuos).
 
 ## Change log
+
+### 0.3.0
+
+- Refactor plugin code
+- Configuration is now per deck and template
+- Add config dialog
 
 ### 0.2.2
 
