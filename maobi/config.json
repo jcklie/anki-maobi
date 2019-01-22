@@ -1,11 +1,9 @@
 {
     "decks": [
         {
-            "name": "Maobi",
+            "deck": "Maobi",
             "template": "Recognition",
             "field": "Hanzi"
         }
-    ],
-    "size": 200,
-    "grid": "rice"
+    ]
 }
