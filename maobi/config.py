@@ -25,6 +25,8 @@ class GridTypes(Enum):
 
 
 class DeckConfig:
+    """ DeckConfig is the Maobi config for a specific deck. """
+
     def __init__(
         self, deck: str, template: str, field: str, grid: GridType, size: int, enabled: bool
     ):
@@ -36,7 +38,7 @@ class DeckConfig:
         self.enabled = enabled
 
     def __hash__(self):
-        # A config is unique per deck,tempalte,field combination. Other fields are negletcted
+        # A config is unique per (deck,template,field combination). Other fields are neglected.
         return hash((self.deck, self.template, self.field))
 
     def __eq__(self, other):
@@ -49,6 +51,7 @@ class DeckConfig:
 
 
 class MaobiConfig:
+    """ MaobiConfig is the config as loaded from config.json. """
 
     DEFAULT_SIZE = 200
     DEFAULT_GRID = GridTypes.RICE.value
