@@ -63,7 +63,6 @@ onShownHook.push(function () {
 """
 )
 
-
 class MaobiException(Exception):
     def __init__(self, message):
         super(MaobiException, self).__init__(message)
@@ -97,7 +96,7 @@ def maobi_hook(html: str, card: Card, context: str) -> str:
         character_data = _load_character_data(character)
     except MaobiException as e:
         debug(maobi_config, str(e))
-        return html
+        return _build_error_message(html, str(e))
 
     # Style the character div depending on the configuration
     styles = []
@@ -213,3 +212,13 @@ def _build_hanzi_grid_style(grid_type: GridType) -> str:
         svg_data = f.read()
 
     return style.substitute(target_div=TARGET_DIV, svg_data=quote(svg_data))
+
+
+def _build_error_message(html: str, message: str) -> str:
+    """ Constructs the HTML for an error text with message `message` over the original html. """
+    return f"""<p style="text-align: center; color: red; font-size: large;">
+Maobi encountered an error: <br />
+{message}
+</p>
+{html}
+"""
