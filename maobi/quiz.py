@@ -49,7 +49,6 @@ onShownHook.push(function () {
     height: $size,
     showCharacter: false,
     showOutline: false,
-    showHintAfterMisses: 1,
     highlightOnComplete: true,
     leniency: $leniency,
     padding: 0,
