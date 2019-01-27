@@ -28,13 +28,14 @@ class DeckConfig:
     """ DeckConfig is the Maobi config for a specific deck. """
 
     def __init__(
-        self, deck: str, template: str, field: str, grid: GridType, size: int, enabled: bool
+        self, deck: str, template: str, field: str, grid: GridType, size: int, leniency: int, enabled: bool
     ):
         self.deck = deck
         self.template = template
         self.field = field
         self.grid = grid
         self.size = size
+        self.leniency = leniency
         self.enabled = enabled
 
     def __hash__(self):
@@ -46,16 +47,13 @@ class DeckConfig:
             return self.deck == other.deck and self.template == other.template
         return False
 
-    def __str__(self) -> str:
-        return f"DeckConfig<Deck: '{self.deck}', Template: '{self.template}', Field: '{self.field}', Grid: '{self.grid.name}', Size: '{self.size}', Enabled: '{self.enabled}'>"
-
-
 class MaobiConfig:
     """ MaobiConfig is the config as loaded from config.json. """
 
     DEFAULT_SIZE = 200
     DEFAULT_GRID = GridTypes.RICE.value
     DEFAULT_ENABLED = True
+    DEFAULT_LENIENCY = 100
 
     def __init__(self, config_json: dict):
         self.debug = config_json.get("debug", False)
@@ -68,6 +66,7 @@ class MaobiConfig:
                 e["field"],
                 GridTypes.from_name(e.get("grid", MaobiConfig.DEFAULT_GRID.name)),
                 e.get("size", MaobiConfig.DEFAULT_SIZE),
+                e.get("leniency", MaobiConfig.DEFAULT_LENIENCY),
                 e.get("enabled", MaobiConfig.DEFAULT_ENABLED),
             )
             self.decks.add(deck_config)
@@ -109,6 +108,7 @@ class MaobiConfig:
                 "grid": e.grid.name,
                 "size": e.size,
                 "field": e.field,
+                "leniency": e.leniency,
                 "enabled": e.enabled,
             }
             result["decks"].append(deck)
@@ -132,6 +132,7 @@ class MaobiConfigDialog(QDialog):
         self._field = self._build_field_combo_box()
         self._grid = self._build_grid_combo_box()
         self._size = self._build_size_spin_box()
+        self._leniency = self._build_leniency_slider()
 
         formGroupBox = QGroupBox("Edit Maobi configuration")
         layout = QFormLayout()
@@ -139,6 +140,7 @@ class MaobiConfigDialog(QDialog):
         layout.addRow(QLabel("Field:"), self._field)
         layout.addRow(QLabel("Grid:"), self._grid)
         layout.addRow(QLabel("Size:"), self._size)
+        layout.addRow(QLabel("Leniency:"), self._leniency)
         formGroupBox.setLayout(layout)
 
         buttonBox = QDialogButtonBox(QDialogButtonBox.Ok | QDialogButtonBox.Cancel)
@@ -184,6 +186,15 @@ class MaobiConfigDialog(QDialog):
         spinBox.setValue(MaobiConfig.DEFAULT_SIZE)
         return spinBox
 
+    def _build_leniency_slider(self) -> QSlider:
+        slider = QSlider(Qt.Horizontal)
+        slider.setMinimum(0)
+        slider.setMaximum(2 * MaobiConfig.DEFAULT_LENIENCY)
+        slider.setTickPosition(QSlider.TicksBelow)
+        slider.setTickInterval(MaobiConfig.DEFAULT_LENIENCY)
+        slider.setValue(MaobiConfig.DEFAULT_LENIENCY)
+        return slider
+
     def _accept(self):
         self._save_config()
         self.close()
@@ -212,6 +223,7 @@ class MaobiConfigDialog(QDialog):
         self._grid.setCurrentIndex(idx)
 
         self._size.setValue(deck_config.size)
+        self._leniency.setValue(deck_config.leniency)
 
     def _save_config(self):
         config = MaobiConfig.load()
@@ -223,8 +235,9 @@ class MaobiConfigDialog(QDialog):
         enabled = self._is_enabled()
         grid = self._grid_name()
         size = self._size_value()
+        leniency = self._leniency_value()
 
-        new_deck_config = DeckConfig(deck_name, template_name, field_name, grid, size, enabled)
+        new_deck_config = DeckConfig(deck_name, template_name, field_name, grid, size, leniency, enabled)
 
         # Remove the old config if it existed, then add the new one
         config.decks.discard(deck_config)
@@ -258,6 +271,8 @@ class MaobiConfigDialog(QDialog):
     def _size_value(self) -> int:
         return self._size.value()
 
+    def _leniency_value(self) -> int:
+        return self._leniency.value()
 
 def add_maobi_button(self):
     maobi_button = QPushButton("Maobi")

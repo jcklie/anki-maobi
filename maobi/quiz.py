@@ -51,6 +51,7 @@ onShownHook.push(function () {
     showOutline: false,
     showHintAfterMisses: 1,
     highlightOnComplete: true,
+    leniency: $leniency,
     padding: 0,
     charDataLoader: function(char, onComplete) {
     var charData = $character_data;
@@ -118,6 +119,7 @@ def maobi_hook(html: str, card: Card, context: str) -> str:
         "character": character,
         "character_data": character_data,
         "size": config.size,
+        "leniency": config.leniency / 100.0,
         "styles": "\n".join(styles),
     }
 

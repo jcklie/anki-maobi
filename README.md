@@ -64,7 +64,7 @@ characters from [CC-CEDICT](https://cc-cedict.org/wiki/). After I imported it, I
 all cards. Whenever I want to learn a new character, I just search and then unsuspend it. This saves 
 time from creating cards and looking up definitions.
 
-### Create/alter a card type
+### Insert place holder into a card template
 
 In order to let *maobi* insert the quiz into a card, its template need to contain
 
@@ -109,6 +109,9 @@ The configuration is done per deck and card template. The following paragraphs e
 
   <dt>Size</dt>
   <dd>This specifies the size of the quiz box in px (default 200).</dd>
+  
+  <dt>Leniency</dt>
+  <dd>This can be set to make stroke grading more or less lenient. The smaller this is, the more strictly the quiz is graded.</dd>
 </dl>
 
 ## Disclaimer
