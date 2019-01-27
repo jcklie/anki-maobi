@@ -160,6 +160,7 @@ Yes. I personally use a Wacom graphics tablet, e.g. the [Wacom Intuos](https://w
 - Refactor plugin code
 - Configuration is now per deck and template
 - Add config dialog
+- Display error messages on exception
 
 ### 0.2.2
 
