@@ -1,3 +1,4 @@
+import glob
 import os
 from zipfile import ZipFile
 
@@ -26,8 +27,8 @@ if __name__ == "__main__":
     os.makedirs(TARGET_FOLDER, exist_ok=True)
 
     with ZipFile(os.path.join(TARGET_FOLDER, package_name), 'w') as myzip:
-        copy_file_to_zip(myzip, os.path.join(maobi, "__init__.py"))
-        copy_file_to_zip(myzip, os.path.join(maobi, "__version__.py"))
+        for e in glob.glob(os.path.join(maobi, "*.py")):
+            copy_file_to_zip(myzip, e)
 
         copy_file_to_zip(myzip, os.path.join(maobi, "characters.zip"))
         copy_file_to_zip(myzip, os.path.join(maobi, "hanzi-writer.min.js"))

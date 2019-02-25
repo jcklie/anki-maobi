@@ -4,7 +4,7 @@ from enum import Enum
 from aqt import mw
 from aqt.qt import *
 
-from maobi.util import debug, error
+from .util import debug, error
 
 GridType = namedtuple("GridType", ["name", "label"])
 
