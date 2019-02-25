@@ -7,8 +7,8 @@ from anki.cards import Card
 from anki.utils import stripHTML
 from aqt import mw
 
-from maobi.config import GridType, DeckConfig, MaobiConfig
-from maobi.util import debug, error
+from .config import GridType, DeckConfig, MaobiConfig
+from .util import debug, error
 
 PATH_MAOBI = os.path.dirname(os.path.realpath(__file__))
 PATH_HANZI_WRITER = os.path.join(PATH_MAOBI, "hanzi-writer.min.js")

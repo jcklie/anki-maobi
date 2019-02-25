@@ -2,7 +2,7 @@ from anki.hooks import addHook, wrap
 
 
 def patch_quiz():
-    from maobi.quiz import maobi_hook
+    from .quiz import maobi_hook
 
     addHook("prepareQA", maobi_hook)
 
@@ -10,7 +10,7 @@ def patch_quiz():
 def patch_config():
     from aqt.clayout import CardLayout
 
-    from maobi.config import add_maobi_button
+    from .config import add_maobi_button
 
     CardLayout.setupButtons = wrap(CardLayout.setupButtons, add_maobi_button)
 
