@@ -5,10 +5,9 @@ from zipfile import ZipFile
 
 from anki.cards import Card
 from anki.utils import stripHTML
-from aqt import mw
 
 from .config import GridType, DeckConfig, MaobiConfig
-from .util import debug, error
+from .util import debug, error, MaobiException
 
 PATH_MAOBI = os.path.dirname(os.path.realpath(__file__))
 PATH_HANZI_WRITER = os.path.join(PATH_MAOBI, "hanzi-writer.min.js")
@@ -63,40 +62,11 @@ onShownHook.push(function () {
 """
 )
 
-class MaobiException(Exception):
-    def __init__(self, message):
-        super(MaobiException, self).__init__(message)
 
-
-def maobi_hook(html: str, card: Card, context: str) -> str:
-    # Only show the quiz on the front side, else it can lead to rendering issues
-    if context not in {"reviewQuestion", "clayoutQuestion", "previewQuestion"}:
-        return html
-
-    # This reads from the config.json in the addon folder
-    maobi_config = MaobiConfig.load()
-
-    # Search the active deck configuration
-    deck_name = mw.col.decks.current()["name"]
-    template_name = card.template()["name"]
-    config = maobi_config.search_active_deck_config(deck_name, template_name)
-
-    # Return if we did not find it
-    if not config:
-        debug(maobi_config, f"Config not found")
-        return html
-
-    if not config.enabled:
-        debug(maobi_config, f"Config disabled")
-        return html
-
+def draw_quiz(html: str, card: Card, config: MaobiConfig) -> str:
     # Get the character to write and the corresponding character data
-    try:
-        character = _get_character(card, config)
-        character_data = _load_character_data(character)
-    except MaobiException as e:
-        debug(maobi_config, str(e))
-        return _build_error_message(html, str(e))
+    character = _get_character(card, config)
+    character_data = _load_character_data(character)
 
     # Style the character div depending on the configuration
     styles = []
@@ -214,11 +184,4 @@ def _build_hanzi_grid_style(grid_type: GridType) -> str:
     return style.substitute(target_div=TARGET_DIV, svg_data=quote(svg_data))
 
 
-def _build_error_message(html: str, message: str) -> str:
-    """ Constructs the HTML for an error text with message `message` over the original html. """
-    return f"""<p style="text-align: center; color: red; font-size: large;">
-Maobi encountered an error: <br />
-{message}
-</p>
-{html}
-"""
+

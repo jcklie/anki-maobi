@@ -2,7 +2,7 @@ from anki.hooks import addHook, wrap
 
 
 def patch_quiz():
-    from .quiz import maobi_hook
+    from .hook import maobi_hook
 
     addHook("prepareQA", maobi_hook)
 

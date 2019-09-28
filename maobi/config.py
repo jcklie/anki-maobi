@@ -129,7 +129,8 @@ class MaobiConfigDialog(QDialog):
         self.setWindowTitle("Maobi Configuration")
 
         self._enabled = self._build_enabled_checkbox()
-        self._field = self._build_field_combo_box()
+        self._writing_field = self._build_field_combo_box()
+        self._animation_field = self._build_field_combo_box()
         self._grid = self._build_grid_combo_box()
         self._size = self._build_size_spin_box()
         self._leniency = self._build_leniency_slider()
@@ -137,7 +138,8 @@ class MaobiConfigDialog(QDialog):
         formGroupBox = QGroupBox("Edit Maobi configuration")
         layout = QFormLayout()
         layout.addRow(QLabel("Enabled:"), self._enabled)
-        layout.addRow(QLabel("Field:"), self._field)
+        layout.addRow(QLabel("Writing Field:"), self._writing_field)
+        layout.addRow(QLabel("Animation Field:"), self._animation_field)
         layout.addRow(QLabel("Grid:"), self._grid)
         layout.addRow(QLabel("Size:"), self._size)
         layout.addRow(QLabel("Leniency:"), self._leniency)
@@ -213,8 +215,8 @@ class MaobiConfigDialog(QDialog):
             return
 
         # Find the right field
-        idx = self._field.findText(deck_config.field)
-        self._field.setCurrentIndex(idx)
+        idx = self._writing_field.findText(deck_config.field)
+        self._writing_field.setCurrentIndex(idx)
 
         self._enabled.setChecked(deck_config.enabled)
 
@@ -259,7 +261,7 @@ class MaobiConfigDialog(QDialog):
         return self._card.template()["name"]
 
     def _field_name(self) -> str:
-        return self._field.currentText()
+        return self._writing_field.currentText()
 
     def _is_enabled(self) -> bool:
         return self._enabled.isChecked()
