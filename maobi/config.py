@@ -1,10 +1,17 @@
 from collections import namedtuple
 from enum import Enum
+import os
 
 from aqt import mw
 from aqt.qt import *
 
 from .util import debug, error
+
+PATH_MAOBI = os.path.dirname(os.path.realpath(__file__))
+PATH_CHARACTERS = os.path.join(PATH_MAOBI, "characters.zip")
+PATH_HANZI_WRITER = os.path.join(PATH_MAOBI, "hanzi-writer.min.js")
+PATH_RICE_GRID = os.path.join(PATH_MAOBI, "rice.svg")
+PATH_FIELD_GRID = os.path.join(PATH_MAOBI, "field.svg")
 
 GridType = namedtuple("GridType", ["name", "label"])
 
@@ -129,8 +136,7 @@ class MaobiConfigDialog(QDialog):
         self.setWindowTitle("Maobi Configuration")
 
         self._enabled = self._build_enabled_checkbox()
-        self._writing_field = self._build_field_combo_box()
-        self._animation_field = self._build_field_combo_box()
+        self._field = self._build_field_combo_box()
         self._grid = self._build_grid_combo_box()
         self._size = self._build_size_spin_box()
         self._leniency = self._build_leniency_slider()
@@ -138,8 +144,7 @@ class MaobiConfigDialog(QDialog):
         formGroupBox = QGroupBox("Edit Maobi configuration")
         layout = QFormLayout()
         layout.addRow(QLabel("Enabled:"), self._enabled)
-        layout.addRow(QLabel("Writing Field:"), self._writing_field)
-        layout.addRow(QLabel("Animation Field:"), self._animation_field)
+        layout.addRow(QLabel("Writing Field:"), self._field)
         layout.addRow(QLabel("Grid:"), self._grid)
         layout.addRow(QLabel("Size:"), self._size)
         layout.addRow(QLabel("Leniency:"), self._leniency)
@@ -215,8 +220,8 @@ class MaobiConfigDialog(QDialog):
             return
 
         # Find the right field
-        idx = self._writing_field.findText(deck_config.field)
-        self._writing_field.setCurrentIndex(idx)
+        idx = self._field.findText(deck_config.field)
+        self._field.setCurrentIndex(idx)
 
         self._enabled.setChecked(deck_config.enabled)
 
@@ -261,7 +266,7 @@ class MaobiConfigDialog(QDialog):
         return self._card.template()["name"]
 
     def _field_name(self) -> str:
-        return self._writing_field.currentText()
+        return self._field.currentText()
 
     def _is_enabled(self) -> bool:
         return self._enabled.isChecked()
@@ -275,6 +280,7 @@ class MaobiConfigDialog(QDialog):
 
     def _leniency_value(self) -> int:
         return self._leniency.value()
+
 
 def add_maobi_button(self):
     maobi_button = QPushButton("Maobi")

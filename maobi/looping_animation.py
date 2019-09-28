@@ -2,61 +2,49 @@ from string import Template
 
 from anki.cards import Card
 
-from maobi.grid import build_hanzi_grid, get_border_style
-from .data import _get_character, _load_character_data
 from .config import MaobiConfig
+from .data import _get_character, _load_character_data
+from .grid import build_hanzi_grid, get_border_style
+from .util import error
 
-_TARGET_DIV = "character-target-div"
+_TARGET_DIV = "maobi-annotation-target-div"
 
 TEMPLATE = Template(
     """
+$html
+
 <style scoped>
-#$target_div {
-    display: inline-block;
-
-    // We use outline instead of border in order to not cut into the background grid image: it 
-    // can be that the border stroke width would be divided between inside and outside the div,
-    // therefore overlapping with the background.
-    outline-color: rgb(0, 0, 0);
-    outline-style: solid;
-    outline-width: 1px;
-    outline-offset: -1px;
-}
-
 $styles
 </style>
-
-$html
 
 <script>
 onShownHook.push(function () {
     var writer = HanziWriter.create('$target_div', '$character', {
     width: $size,
     height: $size,
-    showCharacter: false,
-    showOutline: false,
-    highlightOnComplete: true,
-    leniency: $leniency,
-    padding: 0,
+    delayBetweenLoops: 3000,
     charDataLoader: function(char, onComplete) {
     var charData = $character_data;
         onComplete(charData);
     }
     });
-    writer.quiz();
+    writer.loopCharacterAnimation();
 });
 </script>
 """
 )
 
 
-def draw_quiz(html: str, card: Card, config: MaobiConfig) -> str:
+def draw_looping_animation(html: str, card: Card, config: MaobiConfig) -> str:
     if 'id="' + _TARGET_DIV not in html:
         return html
 
-    # Get the character to write and the corresponding character data
+    # Get the character to loop and the corresponding character data
     character = _get_character(card, config)
     character_data = _load_character_data(character)
+
+    with open(r"D:\AnkiData\addons21\maobi\foo.html", "w", encoding="utf-8") as f:
+        f.write(html)
 
     styles = [
         get_border_style(_TARGET_DIV),
@@ -70,7 +58,6 @@ def draw_quiz(html: str, card: Card, config: MaobiConfig) -> str:
         "character": character,
         "character_data": character_data,
         "size": config.size,
-        "leniency": config.leniency / 100.0,
         "styles": "\n".join(styles),
     }
 

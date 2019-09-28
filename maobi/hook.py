@@ -2,16 +2,13 @@ from anki.cards import Card
 
 from aqt import mw
 
-from .config import MaobiConfig
+from .config import MaobiConfig, PATH_HANZI_WRITER
+from .looping_animation import draw_looping_animation
 from .quiz import draw_quiz
 from .util import debug, _build_error_message
 
 
 def maobi_hook(html: str, card: Card, context: str) -> str:
-    # Only show the quiz on the front side, else it can lead to rendering issues
-    if context not in {"reviewQuestion", "clayoutQuestion", "previewQuestion"}:
-        return html
-
     # This reads from the config.json in the addon folder
     maobi_config = MaobiConfig.load()
 
@@ -29,9 +26,20 @@ def maobi_hook(html: str, card: Card, context: str) -> str:
         debug(maobi_config, f"Config disabled")
         return html
 
-    # Get the character to write and the corresponding character data
+    # Load the hanzi writer JavaScript
+    with open(PATH_HANZI_WRITER, "r") as f:
+        hanzi_writer_script = f.read()
+
+    # Make sure to add the script only once here
+    html += "\n<script>" + hanzi_writer_script + "</script>"
+
+    # Draw the things
     try:
-        html = draw_quiz(html, card, config)
+        # Only show the quiz on the front side, else it can lead to rendering issues
+        if context in {"reviewQuestion", "clayoutQuestion", "previewQuestion"}:
+            html = draw_quiz(html, card, config)
+
+        html = draw_looping_animation(html, card, config)
     except Exception as e:
         debug(maobi_config, str(e))
         return _build_error_message(html, str(e))

@@ -14,7 +14,7 @@ def error(msg: str):
 
 def debug(config, msg: str):
     """ Raises an error with message `msg` if debug is enabled. This will cause a popup in Anki. """
-    if config.debug:
+    if not config.debug:
         sys.stderr.write(msg)
         sys.stderr.write("\n")
 
