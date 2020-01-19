@@ -23,8 +23,12 @@ TARGET_DIV = "character-target-div"
 TEMPLATE = Template(
     """
 <style scoped>
-#$target_div {
+#$target_div > div {
+    position: absolute;
+    left: 50%;
     display: inline-block;
+    
+    transition: all 500ms ease-in-out;
 
     // We use outline instead of border in order to not cut into the background grid image: it 
     // can be that the border stroke width would be divided between inside and outside the div,
@@ -131,7 +135,7 @@ def maobi_hook(html: str, card: Card, context: str) -> str:
     return result
 
 
-def _get_characters(card: Card, config: DeckConfig) -> "list[str]":
+def _get_characters(card: Card, config: DeckConfig) -> list:
     """ Extracts the characters to write from `card`.
 
     Returns:
@@ -202,7 +206,7 @@ def _build_hanzi_grid_style(grid_type: GridType) -> str:
     # `background-size: covered;` , but that made the image cut off at the right side.
     style = Template(
         """
-#$target_div {
+#$target_div > div {
     background: url('data:image/svg+xml;charset=utf8,$svg_data');
     background-size: 100% 100%;
 }
