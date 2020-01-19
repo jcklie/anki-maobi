@@ -53,8 +53,8 @@ onShownHook.push(function () {
     };
     
     var data = {
-        character: '$character',
-        characterData: $character_data,
+        characters: $characters,
+        charactersData: ($characters_data).map(JSON.parse),
     };
 
     $maobi_quiz_script
@@ -92,8 +92,8 @@ def maobi_hook(html: str, card: Card, context: str) -> str:
 
     # Get the character to write and the corresponding character data
     try:
-        character = _get_character(card, config)
-        character_data = _load_character_data(character)
+        characters = _get_characters(card, config)
+        characters_data = [_load_character_data(c) for c in characters]
     except MaobiException as e:
         debug(maobi_config, str(e))
         return _build_error_message(html, str(e))
@@ -119,10 +119,8 @@ def maobi_hook(html: str, card: Card, context: str) -> str:
         "hanzi_writer_script": hanzi_writer_script,
         "maobi_quiz_script": maobi_quiz_script,
         "target_div": TARGET_DIV,
-        "character": character,
-        "characters": [character],
-        "characters_data": [character_data],
-        "character_data": character_data,
+        "characters": characters,
+        "characters_data": characters_data,
         "size": config.size,
         "leniency": config.leniency / 100.0,
         "styles": "\n".join(styles),
@@ -133,11 +131,11 @@ def maobi_hook(html: str, card: Card, context: str) -> str:
     return result
 
 
-def _get_character(card: Card, config: DeckConfig) -> str:
-    """ Extracts the character to write from `card`.
+def _get_characters(card: Card, config: DeckConfig) -> "list[str]":
+    """ Extracts the characters to write from `card`.
 
     Returns:
-        character (str): The character contained in field `config.field` of `card`.
+        characters (list[str]): The character contained in field `config.field` of `card`.
     
     Raises:
         MaobiException: 
@@ -155,17 +153,14 @@ def _get_character(card: Card, config: DeckConfig) -> str:
     if field_name not in note:
         raise MaobiException(f"There is no field '{field_name}' in note type {note_type}!")
 
-    # Check that the character is really exactly one character
-    character = note[field_name]
-    character = stripHTML(character)
+    # Check that the character is one or more characters
+    characters = note[field_name]
+    characters = stripHTML(characters)
 
-    if len(character) == 0:
+    if len(characters) == 0:
         raise MaobiException(f"Field '{field_name}' was empty!")
 
-    if len(character) > 1:
-        raise MaobiException(f"Expected a single character, but was '{character}'!")
-
-    return character
+    return [c for c in characters]
 
 
 def _load_character_data(character: str) -> str:

@@ -1,4 +1,4 @@
-var writer = HanziWriter.create(config.targetDiv, data.character, {
+var writer = HanziWriter.create(config.targetDiv, data.characters[0], {
     width: config.size,
     height: config.size,
     showCharacter: false,
@@ -7,7 +7,7 @@ var writer = HanziWriter.create(config.targetDiv, data.character, {
     leniency: config.leniency,
     padding: 0,
     charDataLoader: function (char, onComplete) {
-        var charData = data.characterData;
+        var charData = data.charactersData[0];
         onComplete(charData);
     }
 });
