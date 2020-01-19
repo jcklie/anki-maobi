@@ -47,6 +47,7 @@ class DeckConfig:
             return self.deck == other.deck and self.template == other.template
         return False
 
+
 class MaobiConfig:
     """ MaobiConfig is the config as loaded from config.json. """
 

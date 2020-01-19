@@ -1,3 +1,4 @@
+import json
 import os
 from string import Template
 from urllib.parse import quote
@@ -12,6 +13,7 @@ from .util import debug, error
 
 PATH_MAOBI = os.path.dirname(os.path.realpath(__file__))
 PATH_HANZI_WRITER = os.path.join(PATH_MAOBI, "hanzi-writer.min.js")
+PATH_QUIZ_JS = os.path.join(PATH_MAOBI, "quiz.js")
 PATH_CHARACTERS = os.path.join(PATH_MAOBI, "characters.zip")
 PATH_RICE_GRID = os.path.join(PATH_MAOBI, "rice.svg")
 PATH_FIELD_GRID = os.path.join(PATH_MAOBI, "field.svg")
@@ -44,20 +46,18 @@ $hanzi_writer_script
 
 <script>
 onShownHook.push(function () {
-    var writer = HanziWriter.create('$target_div', '$character', {
-    width: $size,
-    height: $size,
-    showCharacter: false,
-    showOutline: false,
-    highlightOnComplete: true,
-    leniency: $leniency,
-    padding: 0,
-    charDataLoader: function(char, onComplete) {
-    var charData = $character_data;
-        onComplete(charData);
-    }
-    });
-    writer.quiz();
+    var config = {
+        size: $size,
+        leniency: $leniency,
+        targetDiv: '$target_div'
+    };
+    
+    var data = {
+        character: '$character',
+        characterData: $character_data,
+    };
+
+    $maobi_quiz_script
 });
 </script>
 """
@@ -109,12 +109,19 @@ def maobi_hook(html: str, card: Card, context: str) -> str:
     with open(PATH_HANZI_WRITER, "r") as f:
         hanzi_writer_script = f.read()
 
+    # Load the maobi quiz JavaScript
+    with open(PATH_QUIZ_JS, "r") as f:
+        maobi_quiz_script = f.read()
+
     # Render the template
     data = {
         "html": html,
         "hanzi_writer_script": hanzi_writer_script,
+        "maobi_quiz_script": maobi_quiz_script,
         "target_div": TARGET_DIV,
         "character": character,
+        "characters": [character],
+        "characters_data": [character_data],
         "character_data": character_data,
         "size": config.size,
         "leniency": config.leniency / 100.0,
