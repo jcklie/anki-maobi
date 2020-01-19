@@ -27,8 +27,8 @@ TEMPLATE = Template(
     position: absolute;
     left: 50%;
     display: inline-block;
-    
-    transition: all 500ms ease-in-out;
+
+    transition: all 300ms ease-in-out;
 
     // We use outline instead of border in order to not cut into the background grid image: it 
     // can be that the border stroke width would be divided between inside and outside the div,

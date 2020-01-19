@@ -6,7 +6,7 @@ var CHAR_SPACING = 20;
 
 
 /**
- * Starts the quiz for the next character and
+ * Starts the quiz for the next character and moves all previous characters to the left
  */
 function quizNextCharacter() {
     if (curQuizDiv !== undefined) {
@@ -34,7 +34,7 @@ function quizNextCharacter() {
 }
 
 /**
- * Repositions all character divs
+ * Repositions all character divs (thereby triggering css animations)
  */
 function repositionDivs() {
     prevCharacterDivs.map(function (div, idx) {
@@ -68,8 +68,8 @@ function quizCharacter(character, characterData, targetDiv) {
             onComplete(characterData);
         },
         onComplete: function (data) {
-            // wait for HanziWriter animation to complete
-            setTimeout(quizNextCharacter, 1000);
+            // wait for HanziWriter finish animation
+            setTimeout(quizNextCharacter, 200);
         }
     });
     writer.quiz();
