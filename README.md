@@ -73,7 +73,7 @@ In order to let *maobi* insert the quiz into a card, its template need to contai
 on the question side. In its position, the quiz will be inserted. You can add or overwrite the
 default style by using the `character-target-div` id, by adding e.g.
 
-    #character-target-div { 
+    #character-target-div > div { 
         background-color: magenta;
     }
 
