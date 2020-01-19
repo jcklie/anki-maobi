@@ -19,10 +19,15 @@ PATH_RICE_GRID = os.path.join(PATH_MAOBI, "rice.svg")
 PATH_FIELD_GRID = os.path.join(PATH_MAOBI, "field.svg")
 
 TARGET_DIV = "character-target-div"
+REVEAL_BUTTON = "reveal-character"
 
 TEMPLATE = Template(
     """
 <style scoped>
+#$target_div {
+    height: ${size}px;
+}
+
 #$target_div > div {
     position: absolute;
     left: 50%;
@@ -53,7 +58,8 @@ onShownHook.push(function () {
     var config = {
         size: $size,
         leniency: $leniency,
-        targetDiv: '$target_div'
+        targetDiv: '$target_div',
+        revealButton: '$reveal_button',
     };
     
     var data = {
@@ -123,6 +129,7 @@ def maobi_hook(html: str, card: Card, context: str) -> str:
         "hanzi_writer_script": hanzi_writer_script,
         "maobi_quiz_script": maobi_quiz_script,
         "target_div": TARGET_DIV,
+        "reveal_button": REVEAL_BUTTON,
         "characters": characters,
         "characters_data": characters_data,
         "size": config.size,

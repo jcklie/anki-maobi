@@ -1,9 +1,12 @@
 var curCharacterIdx = -1;
 var curQuizDiv = undefined;
+var curWriter = undefined;
 var prevCharacterDivs = [];
 
 var CHAR_SPACING = 20;
 
+var revealAnimationInProgress = false;
+var revealButton = document.getElementById(config.revealButton);
 
 /**
  * Starts the quiz for the next character and moves all previous characters to the left
@@ -29,6 +32,12 @@ function quizNextCharacter() {
             setTimeout(function () {
                 repositionDivs()
             }, 50);
+        }
+    } else {
+        try {
+            if (revealButton) revealButton.disabled = true;
+        } catch (e) {
+            console.error(e);
         }
     }
 }
@@ -56,7 +65,7 @@ function repositionDivs() {
  * @param targetDiv div that should be used for rendering the quiz
  */
 function quizCharacter(character, characterData, targetDiv) {
-    var writer = HanziWriter.create(targetDiv, character, {
+    curWriter = HanziWriter.create(targetDiv, character, {
         width: config.size,
         height: config.size,
         showCharacter: false,
@@ -64,16 +73,44 @@ function quizCharacter(character, characterData, targetDiv) {
         highlightOnComplete: true,
         leniency: config.leniency,
         padding: 0,
+        delayBetweenStrokes: 200,
         charDataLoader: function (char, onComplete) {
             onComplete(characterData);
         },
         onComplete: function (data) {
             // wait for HanziWriter finish animation
+            curWriter = undefined;
             setTimeout(quizNextCharacter, 200);
         }
     });
-    writer.quiz();
+    curWriter.quiz();
 }
 
+/**
+ * Stops the quiz, reveals the current character, and animates it. Then starts the quiz for this character again
+ */
+function revealCurrentCharacter() {
+    if (!revealAnimationInProgress) {
+        revealAnimationInProgress = true;
+        curWriter.cancelQuiz();
+        curWriter.showOutline();
+        curWriter.animateCharacter({
+            onComplete: function () {
+                setTimeout(function () {
+                    curWriter.hideCharacter();
+                    curWriter.quiz();
+                    revealAnimationInProgress = false;
+                }, 1000);
+            }
+        });
+        curWriter.showOutline = true;
+    }
+}
 
 quizNextCharacter();
+
+if (revealButton) {
+    revealButton.addEventListener('click', function () {
+        revealCurrentCharacter();
+    });
+}
