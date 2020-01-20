@@ -19,7 +19,7 @@ PATH_RICE_GRID = os.path.join(PATH_MAOBI, "rice.svg")
 PATH_FIELD_GRID = os.path.join(PATH_MAOBI, "field.svg")
 
 TARGET_DIV = "character-target-div"
-REVEAL_BUTTON = "reveal-character"
+REVEAL_BUTTON = "reveal-character-btn"
 
 TEMPLATE = Template(
     """

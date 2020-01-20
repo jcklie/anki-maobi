@@ -73,7 +73,7 @@ In order to let *maobi* insert the quiz into a card, its template need to contai
 on the question side. In its position, the quiz will be inserted. 
 In addition, an optional button may be inserted in the template to reveal the current character's strokes:
 
-    <button id="reveal-character">Reveal</button> 
+    <div id="reveal-character-btn" label="Reveal"></div>
 
 You can add or overwrite the default style by using the `character-target-div` id, by adding e.g.
 

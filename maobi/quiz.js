@@ -110,7 +110,11 @@ function revealCurrentCharacter() {
 quizNextCharacter();
 
 if (revealButton) {
-    revealButton.addEventListener('click', function () {
+    var revealButtonInnerBtn = document.createElement("button");
+    revealButtonInnerBtn.textContent = revealButton.getAttribute("label") || 'Reveal';
+    revealButton.append(revealButtonInnerBtn);
+
+    revealButtonInnerBtn.addEventListener('click', function () {
         revealCurrentCharacter();
     });
 }
