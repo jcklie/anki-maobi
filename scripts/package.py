@@ -30,6 +30,8 @@ if __name__ == "__main__":
         for e in glob.glob(os.path.join(maobi, "*.py")):
             copy_file_to_zip(myzip, e)
 
+        copy_file_to_zip(myzip, os.path.join(maobi, "quiz.js"))
+        
         copy_file_to_zip(myzip, os.path.join(maobi, "characters.zip"))
         copy_file_to_zip(myzip, os.path.join(maobi, "hanzi-writer.min.js"))
 
