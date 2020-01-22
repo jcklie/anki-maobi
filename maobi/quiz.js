@@ -56,6 +56,7 @@ function repositionDivs() {
  * @param targetDiv div that should be used for rendering the quiz
  */
 function quizCharacter(character, characterData, targetDiv) {
+    console.log(config.showHintAfterMisses || -1)
     var writer = HanziWriter.create(targetDiv, character, {
         width: config.size,
         height: config.size,
@@ -63,6 +64,8 @@ function quizCharacter(character, characterData, targetDiv) {
         showOutline: false,
         highlightOnComplete: true,
         leniency: config.leniency,
+        showHintAfterMisses: config.showHintAfterMisses || Number.MAX_SAFE_INTEGER, // setting showHintAfterMisses to
+        // false does not disable the feature
         padding: 0,
         charDataLoader: function (char, onComplete) {
             onComplete(characterData);

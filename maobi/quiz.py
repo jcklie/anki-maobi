@@ -53,6 +53,7 @@ onShownHook.push(function () {
     var config = {
         size: $size,
         leniency: $leniency,
+        showHintAfterMisses: $show_hint_after_misses,
         targetDiv: '$target_div'
     };
     
@@ -127,6 +128,7 @@ def maobi_hook(html: str, card: Card, context: str) -> str:
         "characters_data": characters_data,
         "size": config.size,
         "leniency": config.leniency / 100.0,
+        "show_hint_after_misses": config.show_hint_after_misses,
         "styles": "\n".join(styles),
     }
 
