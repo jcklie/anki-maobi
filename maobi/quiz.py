@@ -1,3 +1,4 @@
+import json
 import os
 from string import Template
 from urllib.parse import quote
@@ -12,6 +13,7 @@ from .util import debug, error
 
 PATH_MAOBI = os.path.dirname(os.path.realpath(__file__))
 PATH_HANZI_WRITER = os.path.join(PATH_MAOBI, "hanzi-writer.min.js")
+PATH_QUIZ_JS = os.path.join(PATH_MAOBI, "quiz.js")
 PATH_CHARACTERS = os.path.join(PATH_MAOBI, "characters.zip")
 PATH_RICE_GRID = os.path.join(PATH_MAOBI, "rice.svg")
 PATH_FIELD_GRID = os.path.join(PATH_MAOBI, "field.svg")
@@ -21,8 +23,12 @@ TARGET_DIV = "character-target-div"
 TEMPLATE = Template(
     """
 <style scoped>
-#$target_div {
+#$target_div > div {
+    position: absolute;
+    left: 50%;
     display: inline-block;
+
+    transition: all 300ms ease-in-out;
 
     // We use outline instead of border in order to not cut into the background grid image: it 
     // can be that the border stroke width would be divided between inside and outside the div,
@@ -44,20 +50,18 @@ $hanzi_writer_script
 
 <script>
 onShownHook.push(function () {
-    var writer = HanziWriter.create('$target_div', '$character', {
-    width: $size,
-    height: $size,
-    showCharacter: false,
-    showOutline: false,
-    highlightOnComplete: true,
-    leniency: $leniency,
-    padding: 0,
-    charDataLoader: function(char, onComplete) {
-    var charData = $character_data;
-        onComplete(charData);
-    }
-    });
-    writer.quiz();
+    var config = {
+        size: $size,
+        leniency: $leniency,
+        targetDiv: '$target_div'
+    };
+    
+    var data = {
+        characters: $characters,
+        charactersData: ($characters_data).map(JSON.parse),
+    };
+
+    $maobi_quiz_script
 });
 </script>
 """
@@ -92,8 +96,8 @@ def maobi_hook(html: str, card: Card, context: str) -> str:
 
     # Get the character to write and the corresponding character data
     try:
-        character = _get_character(card, config)
-        character_data = _load_character_data(character)
+        characters = _get_characters(card, config)
+        characters_data = [_load_character_data(c) for c in characters]
     except MaobiException as e:
         debug(maobi_config, str(e))
         return _build_error_message(html, str(e))
@@ -109,13 +113,18 @@ def maobi_hook(html: str, card: Card, context: str) -> str:
     with open(PATH_HANZI_WRITER, "r") as f:
         hanzi_writer_script = f.read()
 
+    # Load the maobi quiz JavaScript
+    with open(PATH_QUIZ_JS, "r") as f:
+        maobi_quiz_script = f.read()
+
     # Render the template
     data = {
         "html": html,
         "hanzi_writer_script": hanzi_writer_script,
+        "maobi_quiz_script": maobi_quiz_script,
         "target_div": TARGET_DIV,
-        "character": character,
-        "character_data": character_data,
+        "characters": characters,
+        "characters_data": characters_data,
         "size": config.size,
         "leniency": config.leniency / 100.0,
         "styles": "\n".join(styles),
@@ -126,11 +135,11 @@ def maobi_hook(html: str, card: Card, context: str) -> str:
     return result
 
 
-def _get_character(card: Card, config: DeckConfig) -> str:
-    """ Extracts the character to write from `card`.
+def _get_characters(card: Card, config: DeckConfig) -> list:
+    """ Extracts the characters to write from `card`.
 
     Returns:
-        character (str): The character contained in field `config.field` of `card`.
+        characters (list[str]): The character contained in field `config.field` of `card`.
     
     Raises:
         MaobiException: 
@@ -148,17 +157,14 @@ def _get_character(card: Card, config: DeckConfig) -> str:
     if field_name not in note:
         raise MaobiException(f"There is no field '{field_name}' in note type {note_type}!")
 
-    # Check that the character is really exactly one character
-    character = note[field_name]
-    character = stripHTML(character)
+    # Check that the character is one or more characters
+    characters = note[field_name]
+    characters = stripHTML(characters)
 
-    if len(character) == 0:
+    if len(characters) == 0:
         raise MaobiException(f"Field '{field_name}' was empty!")
 
-    if len(character) > 1:
-        raise MaobiException(f"Expected a single character, but was '{character}'!")
-
-    return character
+    return [c for c in characters]
 
 
 def _load_character_data(character: str) -> str:
@@ -200,7 +206,7 @@ def _build_hanzi_grid_style(grid_type: GridType) -> str:
     # `background-size: covered;` , but that made the image cut off at the right side.
     style = Template(
         """
-#$target_div {
+#$target_div > div {
     background: url('data:image/svg+xml;charset=utf8,$svg_data');
     background-size: 100% 100%;
 }
