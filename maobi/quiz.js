@@ -4,6 +4,15 @@ var prevCharacterDivs = [];
 
 var CHAR_SPACING = 20;
 
+// these are the standard colors of the chinese support redux plugin
+var TONE_COLORS = {
+    'tone1': 'rgb(255, 0, 0)',
+    'tone2': 'rgb(255, 165, 0)',
+    'tone3': 'rgb(0, 128, 0)',
+    'tone4': 'rgb(0, 0, 255)',
+    'tone5': 'rgb(128, 128, 128)',
+};
+
 
 /**
  * Starts the quiz for the next character and moves all previous characters to the left
@@ -17,7 +26,11 @@ function quizNextCharacter() {
         curQuizDiv = document.createElement("div");
         document.getElementById(config.targetDiv).append(curQuizDiv);
         curQuizDiv.style['margin-left'] = -Math.floor(config.size / 2) + 'px';
-        quizCharacter(data.characters[curCharacterIdx], data.charactersData[curCharacterIdx], curQuizDiv);
+
+        var character = data.characters[curCharacterIdx];
+        var characterData = data.charactersData[curCharacterIdx];
+        var toneColor = data.tones.length > 0 ? TONE_COLORS[data.tones[curCharacterIdx]] : '#555555';
+        quizCharacter(character, characterData, toneColor, curQuizDiv);
 
         // if this is not the first character, we show a fade-in
         if (curCharacterIdx > 0) {
@@ -53,10 +66,10 @@ function repositionDivs() {
  * Creates and starts the HanziWriter quiz for a given character
  * @param character the character to quiz for
  * @param characterData stroke data
+ * @param toneColor color of the tone
  * @param targetDiv div that should be used for rendering the quiz
  */
-function quizCharacter(character, characterData, targetDiv) {
-    console.log(config.showHintAfterMisses || -1)
+function quizCharacter(character, characterData, toneColor, targetDiv) {
     var writer = HanziWriter.create(targetDiv, character, {
         width: config.size,
         height: config.size,
@@ -64,6 +77,7 @@ function quizCharacter(character, characterData, targetDiv) {
         showOutline: false,
         highlightOnComplete: true,
         leniency: config.leniency,
+        strokeColor: toneColor,
         showHintAfterMisses: config.showHintAfterMisses || Number.MAX_SAFE_INTEGER, // setting showHintAfterMisses to
         // false does not disable the feature
         padding: 0,
