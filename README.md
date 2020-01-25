@@ -63,7 +63,8 @@ Use the code found on the [maobi Anki page](https://ankiweb.net/shared/info/9314
 
 You need to create a note type which has a field that contains the character, e.g. `Hanzi`. The other 
 fields are up to you. You can e.g. use the card types that come with the extremely useful 
-[Chinese Support Redux add-on](https://ankiweb.net/shared/info/1128979221).
+[Chinese Support Redux add-on](https://ankiweb.net/shared/info/1128979221). 
+When using this addon, you can optionally configure Maobi to display tone colors from the `Colors` field. 
 
 Then, you need to create cards with this note type. I personally generated a deck with all important 
 characters from [CC-CEDICT](https://cc-cedict.org/wiki/). After I imported it, I immediately suspended 
