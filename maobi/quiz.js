@@ -104,8 +104,8 @@ function quizCharacter(character, characterData, toneColor, targetDiv) {
 function revealCurrentCharacter() {
     if (!revealAnimationInProgress) {
         revealAnimationInProgress = true;
-        curWriter.cancelQuiz();
         curWriter.showOutline();
+        curWriter.cancelQuiz();
         curWriter.animateCharacter({
             onComplete: function () {
                 setTimeout(function () {
@@ -115,7 +115,6 @@ function revealCurrentCharacter() {
                 }, 1000);
             }
         });
-        curWriter.showOutline = true;
     }
 }
 
