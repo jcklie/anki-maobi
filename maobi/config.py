@@ -36,6 +36,7 @@ class DeckConfig:
         size: int,
         leniency: int,
         enabled: bool,
+        show_hint_after_misses: int,
     ):
         self.deck = deck
         self.template = template
@@ -44,6 +45,7 @@ class DeckConfig:
         self.size = size
         self.leniency = leniency
         self.enabled = enabled
+        self.show_hint_after_misses = show_hint_after_misses
 
     def __hash__(self):
         # A config is unique per (deck,template,field combination). Other fields are neglected.
@@ -62,6 +64,7 @@ class MaobiConfig:
     DEFAULT_GRID = GridTypes.RICE.value
     DEFAULT_ENABLED = True
     DEFAULT_LENIENCY = 100
+    DEFAULT_SHOW_HINT_AFTER_MISSES = 3
 
     def __init__(self, config_json: dict):
         self.debug = config_json.get("debug", False)
@@ -76,6 +79,7 @@ class MaobiConfig:
                 e.get("size", MaobiConfig.DEFAULT_SIZE),
                 e.get("leniency", MaobiConfig.DEFAULT_LENIENCY),
                 e.get("enabled", MaobiConfig.DEFAULT_ENABLED),
+                e.get("show_hint_after_misses", MaobiConfig.DEFAULT_SHOW_HINT_AFTER_MISSES),
             )
             self.decks.add(deck_config)
 
@@ -120,6 +124,7 @@ class MaobiConfig:
                 "field": e.field,
                 "leniency": e.leniency,
                 "enabled": e.enabled,
+                "show_hint_after_misses": e.show_hint_after_misses,
             }
             result["decks"].append(deck)
 
@@ -143,6 +148,7 @@ class MaobiConfigDialog(QDialog):
         self._grid = self._build_grid_combo_box()
         self._size = self._build_size_spin_box()
         self._leniency = self._build_leniency_slider()
+        self._show_hint_after_misses = self._build_show_hint_after_misses_spin_box()
 
         formGroupBox = QGroupBox("Edit Maobi configuration")
         layout = QFormLayout()
@@ -151,6 +157,7 @@ class MaobiConfigDialog(QDialog):
         layout.addRow(QLabel("Grid:"), self._grid)
         layout.addRow(QLabel("Size:"), self._size)
         layout.addRow(QLabel("Leniency:"), self._leniency)
+        layout.addRow(QLabel("Show hint after misses:"), self._show_hint_after_misses)
         formGroupBox.setLayout(layout)
 
         buttonBox = QDialogButtonBox(QDialogButtonBox.Ok | QDialogButtonBox.Cancel)
@@ -205,6 +212,13 @@ class MaobiConfigDialog(QDialog):
         slider.setValue(MaobiConfig.DEFAULT_LENIENCY)
         return slider
 
+    def _build_show_hint_after_misses_spin_box(self) -> QSpinBox:
+        spinBox = QSpinBox()
+        spinBox.setMinimum(0)
+        spinBox.setMaximum(10)
+        spinBox.setValue(MaobiConfig.DEFAULT_SHOW_HINT_AFTER_MISSES)
+        return spinBox
+
     def _accept(self):
         self._save_config()
         self.close()
@@ -234,6 +248,7 @@ class MaobiConfigDialog(QDialog):
 
         self._size.setValue(deck_config.size)
         self._leniency.setValue(deck_config.leniency)
+        self._show_hint_after_misses.setValue(deck_config.show_hint_after_misses)
 
     def _save_config(self):
         config = MaobiConfig.load()
@@ -246,9 +261,17 @@ class MaobiConfigDialog(QDialog):
         grid = self._grid_name()
         size = self._size_value()
         leniency = self._leniency_value()
+        show_hint_after_misses = self._show_hint_after_misses_value()
 
         new_deck_config = DeckConfig(
-            deck_name, template_name, field_name, grid, size, leniency, enabled
+            deck_name,
+            template_name,
+            field_name,
+            grid,
+            size,
+            leniency,
+            enabled,
+            show_hint_after_misses,
         )
 
         # Remove the old config if it existed, then add the new one
@@ -285,6 +308,9 @@ class MaobiConfigDialog(QDialog):
 
     def _leniency_value(self) -> int:
         return self._leniency.value()
+
+    def _show_hint_after_misses_value(self) -> int:
+        return self._show_hint_after_misses.value()
 
 
 def add_maobi_button(self):

@@ -4,6 +4,9 @@ var prevCharacterDivs = [];
 
 var CHAR_SPACING = 20;
 
+var targetDiv = document.getElementById(config.targetDiv);
+
+var TONE_COLORS = getToneColors();
 
 /**
  * Starts the quiz for the next character and moves all previous characters to the left
@@ -15,9 +18,13 @@ function quizNextCharacter() {
     if (curCharacterIdx < data.characters.length - 1) {
         curCharacterIdx++;
         curQuizDiv = document.createElement("div");
-        document.getElementById(config.targetDiv).append(curQuizDiv);
+        targetDiv.append(curQuizDiv);
         curQuizDiv.style['margin-left'] = -Math.floor(config.size / 2) + 'px';
-        quizCharacter(data.characters[curCharacterIdx], data.charactersData[curCharacterIdx], curQuizDiv);
+
+        var character = data.characters[curCharacterIdx];
+        var characterData = data.charactersData[curCharacterIdx];
+        var toneColor = data.tones.length > 0 ? TONE_COLORS[data.tones[curCharacterIdx]] : '#555555';
+        quizCharacter(character, characterData, toneColor, curQuizDiv);
 
         // if this is not the first character, we show a fade-in
         if (curCharacterIdx > 0) {
@@ -53,9 +60,10 @@ function repositionDivs() {
  * Creates and starts the HanziWriter quiz for a given character
  * @param character the character to quiz for
  * @param characterData stroke data
+ * @param toneColor color of the tone
  * @param targetDiv div that should be used for rendering the quiz
  */
-function quizCharacter(character, characterData, targetDiv) {
+function quizCharacter(character, characterData, toneColor, targetDiv) {
     var writer = HanziWriter.create(targetDiv, character, {
         width: config.size,
         height: config.size,
@@ -63,6 +71,9 @@ function quizCharacter(character, characterData, targetDiv) {
         showOutline: false,
         highlightOnComplete: true,
         leniency: config.leniency,
+        strokeColor: toneColor,
+        showHintAfterMisses: config.showHintAfterMisses || Number.MAX_SAFE_INTEGER, // setting showHintAfterMisses to
+        // false does not disable the feature
         padding: 0,
         charDataLoader: function (char, onComplete) {
             onComplete(characterData);
@@ -75,5 +86,28 @@ function quizCharacter(character, characterData, targetDiv) {
     writer.quiz();
 }
 
+/**
+* @return the computed color values of the tone colors
+*/
+function getToneColors() {
+    var colors = {};
+    for (var i = 1; i <= 5; i++) {
+        var toneName = 'tone' + i;
+        var tmpSpan = document.createElement('span');
+        tmpSpan.className = toneName;
+        document.body.appendChild(tmpSpan);
+        var color = getComputedStyle(tmpSpan).color;
+        document.body.removeChild(tmpSpan);
+        colors[toneName] = color;
+    }
+    return colors;
+}
 
-quizNextCharacter();
+
+// Init
+// If there is no quiz div, we cannot start maobi
+if(targetDiv){
+    quizNextCharacter();
+} else {
+    console.log('Maobi: target div not found: #' + config.targetDiv);
+}

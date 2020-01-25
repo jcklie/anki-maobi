@@ -63,7 +63,8 @@ Use the code found on the [maobi Anki page](https://ankiweb.net/shared/info/9314
 
 You need to create a note type which has a field that contains the character, e.g. `Hanzi`. The other 
 fields are up to you. You can e.g. use the card types that come with the extremely useful 
-[Chinese Support Redux add-on](https://ankiweb.net/shared/info/1128979221).
+[Chinese Support Redux add-on](https://ankiweb.net/shared/info/1128979221). 
+When using this addon, you can optionally configure Maobi to display tone colors from the `Colors` field. 
 
 Then, you need to create cards with this note type. I personally generated a deck with all important 
 characters from [CC-CEDICT](https://cc-cedict.org/wiki/). After I imported it, I immediately suspended 
@@ -118,6 +119,10 @@ The configuration is done per deck and card template. The following paragraphs e
   
   <dt>Leniency</dt>
   <dd>This can be set to make stroke grading more or less lenient. The smaller this is, the more strictly the quiz is graded.</dd>
+
+  <dt>Show hint after misses</dt>
+  <dd>This specifies after how many wrong strokes a hint is displayed. 0 means never show hints (default 3).</dd>
+  
 </dl>
 
 ## Disclaimer
@@ -164,6 +169,7 @@ Yes. I personally use a Wacom graphics tablet, e.g. the [Wacom Intuos](https://w
 ### 0.4.0
 
 - Quizzes with multiple characters work
+- Can configure after how many wrong strokes hints are displayed
 
 ### 0.3.0
 
