@@ -67,6 +67,7 @@ onShownHook.push(function () {
 """
 )
 
+
 class MaobiException(Exception):
     def __init__(self, message):
         super(MaobiException, self).__init__(message)

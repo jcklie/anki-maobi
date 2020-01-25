@@ -1,3 +1,7 @@
 maobi/meta.json
 maobi-*.zip
 .idea/
+
+maobi/__pycache__/
+venv/
+

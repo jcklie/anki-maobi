@@ -28,7 +28,14 @@ class DeckConfig:
     """ DeckConfig is the Maobi config for a specific deck. """
 
     def __init__(
-        self, deck: str, template: str, field: str, grid: GridType, size: int, leniency: int, enabled: bool
+        self,
+        deck: str,
+        template: str,
+        field: str,
+        grid: GridType,
+        size: int,
+        leniency: int,
+        enabled: bool,
     ):
         self.deck = deck
         self.template = template
@@ -93,7 +100,9 @@ class MaobiConfig:
             if e.deck == deck_name and e.template == template_name:
                 return e
         else:
-            debug(self, f"No configuration found for: '{deck_name}' and template '{template_name}")
+            debug(
+                self, f"No configuration found for: '{deck_name}' and template '{template_name}",
+            )
             return None
 
     def as_object(self) -> dict:
@@ -238,7 +247,9 @@ class MaobiConfigDialog(QDialog):
         size = self._size_value()
         leniency = self._leniency_value()
 
-        new_deck_config = DeckConfig(deck_name, template_name, field_name, grid, size, leniency, enabled)
+        new_deck_config = DeckConfig(
+            deck_name, template_name, field_name, grid, size, leniency, enabled
+        )
 
         # Remove the old config if it existed, then add the new one
         config.decks.discard(deck_config)
@@ -274,6 +285,7 @@ class MaobiConfigDialog(QDialog):
 
     def _leniency_value(self) -> int:
         return self._leniency.value()
+
 
 def add_maobi_button(self):
     maobi_button = QPushButton("Maobi")

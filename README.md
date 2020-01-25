@@ -8,6 +8,12 @@
   <img src="https://raw.githubusercontent.com/Rentier/anki-maobi/master/img/maobi.gif">
 </p>
 
+Learning words consisting of more than one Hanzi also work (thanks to [arueckle](https://github.com/arueckle)):
+
+<p align="center">
+  <img src="https://raw.githubusercontent.com/Rentier/anki-maobi/master/img/maobi_multiple.gif">
+</p>
+
 ## Motivation
 
 Learning Chinese is difficult, remembering what you have learned even more so. I heavily rely on 
