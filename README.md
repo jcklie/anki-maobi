@@ -8,6 +8,12 @@
   <img src="https://raw.githubusercontent.com/Rentier/anki-maobi/master/img/maobi.gif">
 </p>
 
+Learning words consisting of more than one Hanzi also work (thanks to [arueckle](https://github.com/arueckle)):
+
+<p align="center">
+  <img src="https://raw.githubusercontent.com/Rentier/anki-maobi/master/img/maobi_multiple.gif">
+</p>
+
 ## Motivation
 
 Learning Chinese is difficult, remembering what you have learned even more so. I heavily rely on 
@@ -73,7 +79,7 @@ In order to let *maobi* insert the quiz into a card, its template need to contai
 on the question side. In its position, the quiz will be inserted. You can add or overwrite the
 default style by using the `character-target-div` id, by adding e.g.
 
-    #character-target-div { 
+    #character-target-div > div { 
         background-color: magenta;
     }
 
@@ -154,6 +160,10 @@ already compressed the data to reduce the footprint.
 Yes. I personally use a Wacom graphics tablet, e.g. the [Wacom Intuos](https://www.wacom.com/en-us/products/pen-tablets/wacom-intuos).
 
 ## Change log
+
+### 0.4.0
+
+- Quizzes with multiple characters work
 
 ### 0.3.0
 
