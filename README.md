@@ -119,6 +119,10 @@ The configuration is done per deck and card template. The following paragraphs e
   
   <dt>Leniency</dt>
   <dd>This can be set to make stroke grading more or less lenient. The smaller this is, the more strictly the quiz is graded.</dd>
+
+  <dt>Show hint after misses</dt>
+  <dd>This specifies after how many wrong strokes a hint is displayed. 0 means never show hints (default 3).</dd>
+  
 </dl>
 
 ## Disclaimer
@@ -165,6 +169,7 @@ Yes. I personally use a Wacom graphics tablet, e.g. the [Wacom Intuos](https://w
 ### 0.4.0
 
 - Quizzes with multiple characters work
+- Can configure after how many wrong strokes hints are displayed
 
 ### 0.3.0
 

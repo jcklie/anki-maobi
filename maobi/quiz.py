@@ -1,4 +1,3 @@
-import json
 import os
 from string import Template
 from urllib.parse import quote
