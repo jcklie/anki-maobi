@@ -45,6 +45,10 @@ TEMPLATE = Template(
     outline-offset: -1px;
 }
 
+#$reveal_button {
+    margin: 20px 0;
+}
+
 $styles
 </style>
 
