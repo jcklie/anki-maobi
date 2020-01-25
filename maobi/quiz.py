@@ -69,6 +69,7 @@ onShownHook.push(function () {
 """
 )
 
+
 class MaobiException(Exception):
     def __init__(self, message):
         super(MaobiException, self).__init__(message)
@@ -167,9 +168,9 @@ def _get_characters(card: Card, config: DeckConfig) -> tuple:
 
     # extract tones, if possible
     tones = []
-    if 'span' in characters_html:
+    if "span" in characters_html:
         # this is the 'colors' field which has tone information as tone1...4 css classes
-        tones = list(re.findall('tone[12345]', characters_html))
+        tones = list(re.findall("tone[12345]", characters_html))
 
     if len(tones) != len(characters):
         tones = []

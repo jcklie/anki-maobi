@@ -28,8 +28,15 @@ class DeckConfig:
     """ DeckConfig is the Maobi config for a specific deck. """
 
     def __init__(
-        self, deck: str, template: str, field: str, grid: GridType, size: int, leniency: int, enabled: bool,
-            show_hint_after_misses: int
+        self,
+        deck: str,
+        template: str,
+        field: str,
+        grid: GridType,
+        size: int,
+        leniency: int,
+        enabled: bool,
+        show_hint_after_misses: int,
     ):
         self.deck = deck
         self.template = template
@@ -254,8 +261,16 @@ class MaobiConfigDialog(QDialog):
         leniency = self._leniency_value()
         show_hint_after_misses = self._show_hint_after_misses_value()
 
-        new_deck_config = DeckConfig(deck_name, template_name, field_name, grid, size, leniency, enabled, 
-                                     show_hint_after_misses)
+        new_deck_config = DeckConfig(
+            deck_name,
+            template_name,
+            field_name,
+            grid,
+            size,
+            leniency,
+            enabled,
+            show_hint_after_misses,
+        )
 
         # Remove the old config if it existed, then add the new one
         config.decks.discard(deck_config)
