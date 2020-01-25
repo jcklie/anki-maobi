@@ -4,14 +4,9 @@ var prevCharacterDivs = [];
 
 var CHAR_SPACING = 20;
 
-// these are the standard colors of the chinese support redux plugin
-var TONE_COLORS = {
-    'tone1': 'rgb(255, 0, 0)',
-    'tone2': 'rgb(255, 165, 0)',
-    'tone3': 'rgb(0, 128, 0)',
-    'tone4': 'rgb(0, 0, 255)',
-    'tone5': 'rgb(128, 128, 128)',
-};
+var targetDiv = document.getElementById(config.targetDiv);
+
+var TONE_COLORS = getToneColors();
 
 
 /**
@@ -24,7 +19,7 @@ function quizNextCharacter() {
     if (curCharacterIdx < data.characters.length - 1) {
         curCharacterIdx++;
         curQuizDiv = document.createElement("div");
-        document.getElementById(config.targetDiv).append(curQuizDiv);
+        targetDiv.append(curQuizDiv);
         curQuizDiv.style['margin-left'] = -Math.floor(config.size / 2) + 'px';
 
         var character = data.characters[curCharacterIdx];
@@ -92,5 +87,28 @@ function quizCharacter(character, characterData, toneColor, targetDiv) {
     writer.quiz();
 }
 
+/**
+* @return the computed color values of the tone colors
+*/
+function getToneColors() {
+    var colors = {};
+    for (var i = 1; i <= 5; i++) {
+        var toneName = 'tone' + i;
+        var tmpSpan = document.createElement('span');
+        tmpSpan.className = toneName;
+        document.body.appendChild(tmpSpan);
+        var color = getComputedStyle(tmpSpan).color;
+        document.body.removeChild(tmpSpan);
+        colors[toneName] = color;
+    }
+    return colors;
+}
 
-quizNextCharacter();
+
+// Init
+// If there is no quiz div, we cannot start maobi
+if(targetDiv){
+    quizNextCharacter();
+} else {
+    console.log('Maobi: target div not found: #' + config.targetDiv);
+}
