@@ -104,7 +104,9 @@ class MaobiConfig:
             if e.deck == deck_name and e.template == template_name:
                 return e
         else:
-            debug(self, f"No configuration found for: '{deck_name}' and template '{template_name}")
+            debug(
+                self, f"No configuration found for: '{deck_name}' and template '{template_name}",
+            )
             return None
 
     def as_object(self) -> dict:

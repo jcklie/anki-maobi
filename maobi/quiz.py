@@ -1,3 +1,4 @@
+import json
 import os
 from string import Template
 from urllib.parse import quote
@@ -146,7 +147,7 @@ def _get_characters(card: Card, config: DeckConfig) -> tuple:
     Returns:
         characters (tuple[list[str], list[str])): The characters contained in field `config.field` of `card`, and
         possibly the tones (extracted from css classes)
-    
+
     Raises:
         MaobiException: 
             - If there is no field called `deck.field` in `card`.

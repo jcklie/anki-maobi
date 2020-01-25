@@ -8,7 +8,6 @@ var targetDiv = document.getElementById(config.targetDiv);
 
 var TONE_COLORS = getToneColors();
 
-
 /**
  * Starts the quiz for the next character and moves all previous characters to the left
  */
