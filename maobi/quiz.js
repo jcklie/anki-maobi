@@ -7,6 +7,9 @@ var CHAR_SPACING = 20;
 
 var revealAnimationInProgress = false;
 var revealButton = document.getElementById(config.revealButton);
+var targetDiv = document.getElementById(config.targetDiv);
+
+var TONE_COLORS = getToneColors();
 
 /**
  * Starts the quiz for the next character and moves all previous characters to the left
@@ -18,9 +21,13 @@ function quizNextCharacter() {
     if (curCharacterIdx < data.characters.length - 1) {
         curCharacterIdx++;
         curQuizDiv = document.createElement("div");
-        document.getElementById(config.targetDiv).append(curQuizDiv);
+        targetDiv.append(curQuizDiv);
         curQuizDiv.style['margin-left'] = -Math.floor(config.size / 2) + 'px';
-        quizCharacter(data.characters[curCharacterIdx], data.charactersData[curCharacterIdx], curQuizDiv);
+
+        var character = data.characters[curCharacterIdx];
+        var characterData = data.charactersData[curCharacterIdx];
+        var toneColor = data.tones.length > 0 ? TONE_COLORS[data.tones[curCharacterIdx]] : '#555555';
+        quizCharacter(character, characterData, toneColor, curQuizDiv);
 
         // if this is not the first character, we show a fade-in
         if (curCharacterIdx > 0) {
@@ -63,8 +70,10 @@ function repositionDivs() {
  * @param character the character to quiz for
  * @param characterData stroke data
  * @param targetDiv div that should be used for rendering the quiz
+ * @param toneColor color of the tone
+ * @param targetDiv div that should be used for rendering the quiz
  */
-function quizCharacter(character, characterData, targetDiv) {
+function quizCharacter(character, characterData, toneColor, targetDiv) {
     curWriter = HanziWriter.create(targetDiv, character, {
         width: config.size,
         height: config.size,
@@ -74,6 +83,9 @@ function quizCharacter(character, characterData, targetDiv) {
         leniency: config.leniency,
         padding: 0,
         delayBetweenStrokes: 200,
+        strokeColor: toneColor,
+        showHintAfterMisses: config.showHintAfterMisses || Number.MAX_SAFE_INTEGER, // setting showHintAfterMisses to
+        // false does not disable the feature
         charDataLoader: function (char, onComplete) {
             onComplete(characterData);
         },
@@ -107,7 +119,31 @@ function revealCurrentCharacter() {
     }
 }
 
-quizNextCharacter();
+/**
+* @return the computed color values of the tone colors
+*/
+function getToneColors() {
+    var colors = {};
+    for (var i = 1; i <= 5; i++) {
+        var toneName = 'tone' + i;
+        var tmpSpan = document.createElement('span');
+        tmpSpan.className = toneName;
+        document.body.appendChild(tmpSpan);
+        var color = getComputedStyle(tmpSpan).color;
+        document.body.removeChild(tmpSpan);
+        colors[toneName] = color;
+    }
+    return colors;
+}
+
+
+// Init
+// If there is no quiz div, we cannot start maobi
+if(targetDiv){
+    quizNextCharacter();
+} else {
+    console.log('Maobi: target div not found: #' + config.targetDiv);
+}
 
 if (revealButton) {
     var revealButtonInnerBtn = document.createElement("button");

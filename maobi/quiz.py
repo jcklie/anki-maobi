@@ -7,6 +7,7 @@ from zipfile import ZipFile
 from anki.cards import Card
 from anki.utils import stripHTML
 from aqt import mw
+import re
 
 from .config import GridType, DeckConfig, MaobiConfig
 from .util import debug, error
@@ -60,10 +61,12 @@ onShownHook.push(function () {
         leniency: $leniency,
         targetDiv: '$target_div',
         revealButton: '$reveal_button',
+        showHintAfterMisses: $show_hint_after_misses,
     };
     
     var data = {
         characters: $characters,
+        tones: $tones,
         charactersData: ($characters_data).map(JSON.parse),
     };
 
@@ -72,6 +75,7 @@ onShownHook.push(function () {
 </script>
 """
 )
+
 
 class MaobiException(Exception):
     def __init__(self, message):
@@ -102,7 +106,7 @@ def maobi_hook(html: str, card: Card, context: str) -> str:
 
     # Get the character to write and the corresponding character data
     try:
-        characters = _get_characters(card, config)
+        characters, tones = _get_characters(card, config)
         characters_data = [_load_character_data(c) for c in characters]
     except MaobiException as e:
         debug(maobi_config, str(e))
@@ -131,9 +135,11 @@ def maobi_hook(html: str, card: Card, context: str) -> str:
         "target_div": TARGET_DIV,
         "reveal_button": REVEAL_BUTTON,
         "characters": characters,
+        "tones": tones,
         "characters_data": characters_data,
         "size": config.size,
         "leniency": config.leniency / 100.0,
+        "show_hint_after_misses": config.show_hint_after_misses,
         "styles": "\n".join(styles),
     }
 
@@ -142,12 +148,13 @@ def maobi_hook(html: str, card: Card, context: str) -> str:
     return result
 
 
-def _get_characters(card: Card, config: DeckConfig) -> list:
+def _get_characters(card: Card, config: DeckConfig) -> tuple:
     """ Extracts the characters to write from `card`.
 
     Returns:
-        characters (list[str]): The character contained in field `config.field` of `card`.
-    
+        characters (tuple[list[str], list[str])): The characters contained in field `config.field` of `card`, and
+        possibly the tones (extracted from css classes)
+
     Raises:
         MaobiException: 
             - If there is no field called `deck.field` in `card`.
@@ -164,14 +171,23 @@ def _get_characters(card: Card, config: DeckConfig) -> list:
     if field_name not in note:
         raise MaobiException(f"There is no field '{field_name}' in note type {note_type}!")
 
-    # Check that the character is one or more characters
-    characters = note[field_name]
-    characters = stripHTML(characters)
+    characters_html = note[field_name]
+    characters = stripHTML(characters_html)
 
+    # extract tones, if possible
+    tones = []
+    if "span" in characters_html:
+        # this is the 'colors' field which has tone information as tone1...4 css classes
+        tones = list(re.findall("tone[12345]", characters_html))
+
+    if len(tones) != len(characters):
+        tones = []
+
+    # Check that the character is one or more characters
     if len(characters) == 0:
         raise MaobiException(f"Field '{field_name}' was empty!")
 
-    return [c for c in characters]
+    return [c for c in characters], tones
 
 
 def _load_character_data(character: str) -> str:
