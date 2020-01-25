@@ -161,6 +161,10 @@ Yes. I personally use a Wacom graphics tablet, e.g. the [Wacom Intuos](https://w
 
 ## Change log
 
+### 0.4.0
+
+- Quizzes with multiple characters work
+
 ### 0.3.0
 
 - Refactor plugin code
