@@ -157,6 +157,11 @@ I did not design the writing component, it comes from the awesome [Hanzi Writer]
 JavaScript library. Without it, this would not be possible. *maobi* merely bundles it with Anki. Please 
 visit the *Hanzi Writer* website and look how nice it looks!
 
+### Can this be used on mobile?
+
+Sadly, Anki desktop addons do not work on mobile. A workaround can be found [here](https://github.com/jcklie/anki-maobi/issues/20#issuecomment-578490050).
+It uses the hand-written input of the mobile keyboard. 
+
 ### Does this run offline?
 
 Yes, it does. *maobi* is bundled with the character data from the [Hanzi Writer Data](https://github.com/chanind/hanzi-writer-data)
