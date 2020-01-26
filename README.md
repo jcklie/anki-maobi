@@ -139,6 +139,10 @@ well-tested. If you have feature requests or encounter bugs, please open an issu
 
 I checkout this repository into my `git` folder, then symlink the `maobi` folder into `${AnkiData}\addons21`.
 
+## Contributing
+
+For a more detailed contribution guideline, see [here](https://github.com/jcklie/anki-maobi/blob/master/CONTRIBUTING.md).
+
 ### Releasing
 
 1. Bump the version number in `maobi\__version__.py`
