@@ -6,7 +6,9 @@ var prevCharacterDivs = [];
 var CHAR_SPACING = 20;
 
 var revealAnimationInProgress = false;
+var restartQuizAnimationInProgress = false;
 var revealButton = document.getElementById(config.revealButton);
+var restartButton = document.getElementById(config.restartButton);
 var targetDiv = document.getElementById(config.targetDiv);
 
 var TONE_COLORS = getToneColors();
@@ -14,7 +16,7 @@ var TONE_COLORS = getToneColors();
 /**
  * Starts the quiz for the next character and moves all previous characters to the left
  */
-function quizNextCharacter() {
+function quizNextCharacter(showAnimation) {
     if (curQuizDiv !== undefined) {
         prevCharacterDivs.unshift(curQuizDiv);
     }
@@ -29,22 +31,17 @@ function quizNextCharacter() {
         var toneColor = data.tones.length > 0 ? TONE_COLORS[data.tones[curCharacterIdx]] : '#555555';
         quizCharacter(character, characterData, toneColor, curQuizDiv);
 
-        // if this is not the first character, we show a fade-in
-        if (curCharacterIdx > 0) {
-            curQuizDiv.style['margin-left'] = Math.floor(config.size / 2) + CHAR_SPACING + 'px';
+        if (showAnimation) {
             curQuizDiv.style.opacity = '0';
+            if (curCharacterIdx > 0) {
+                curQuizDiv.style['margin-left'] = Math.floor(config.size / 2) + CHAR_SPACING + 'px';
+            }
 
             // let webkit render the content before repositioning the new (new) character div. Otherwise the fade-in
             // animation is ignored
             setTimeout(function () {
                 repositionDivs()
             }, 50);
-        }
-    } else {
-        try {
-            if (revealButton) revealButton.disabled = true;
-        } catch (e) {
-            console.error(e);
         }
     }
 }
@@ -53,7 +50,7 @@ function quizNextCharacter() {
  * Repositions all character divs (thereby triggering css animations)
  */
 function repositionDivs() {
-    prevCharacterDivs.map(function (div, idx) {
+    prevCharacterDivs.forEach(function (div, idx) {
         if (idx < 5) {
             div.style['margin-left'] = Math.floor(-config.size / 2 - (config.size + CHAR_SPACING) * (idx + 1)) + 'px';
         } else {
@@ -92,7 +89,9 @@ function quizCharacter(character, characterData, toneColor, targetDiv) {
         onComplete: function (data) {
             // wait for HanziWriter finish animation
             curWriter = undefined;
-            setTimeout(quizNextCharacter, 200);
+            setTimeout(function () {
+                quizNextCharacter(true)
+            }, 200);
         }
     });
     curWriter.quiz();
@@ -102,7 +101,7 @@ function quizCharacter(character, characterData, toneColor, targetDiv) {
  * Stops the quiz, reveals the current character, and animates it. Then starts the quiz for this character again
  */
 function revealCurrentCharacter() {
-    if (!revealAnimationInProgress) {
+    if (curWriter !== undefined && !revealAnimationInProgress && !restartQuizAnimationInProgress) {
         revealAnimationInProgress = true;
         curWriter.showOutline();
         curWriter.cancelQuiz();
@@ -119,8 +118,8 @@ function revealCurrentCharacter() {
 }
 
 /**
-* @return the computed color values of the tone colors
-*/
+ * @return the computed color values of the tone colors
+ */
 function getToneColors() {
     var colors = {};
     for (var i = 1; i <= 5; i++) {
@@ -135,21 +134,68 @@ function getToneColors() {
     return colors;
 }
 
+/**
+ * Restarts the whole quiz (all characters
+ */
+function restartQuiz() {
+    if (!revealAnimationInProgress && !restartQuizAnimationInProgress) {
+        restartQuizAnimationInProgress = true;
+
+        // for convenience; applies a function on all character div elements (current and previous)
+        var applyAll = function (fn) {
+            if (curQuizDiv) fn(curQuizDiv);
+            for (var i = 0; i < prevCharacterDivs.length; i++) {
+                fn(prevCharacterDivs[i]);
+            }
+        };
+
+        applyAll(function (e) {
+            e.style.opacity = '0';
+        });
+
+        // on complete after 300ms, which is the duration of the css animation
+        setTimeout(function () {
+            applyAll(function (e) {
+                if (e.parentNode) e.parentNode.removeChild(e);
+            });
+
+            restartQuizAnimationInProgress = false;
+
+            curCharacterIdx = -1;
+            curWriter = undefined;
+            curQuizDiv = undefined;
+            prevCharacterDivs = [];
+
+            quizNextCharacter(true);
+        }, 300);
+    }
+}
+
 
 // Init
 // If there is no quiz div, we cannot start maobi
-if(targetDiv){
-    quizNextCharacter();
+if (targetDiv) {
+    quizNextCharacter(false);
+
+    if (revealButton) {
+        var revealButtonInnerBtn = document.createElement("button");
+        revealButtonInnerBtn.textContent = revealButton.getAttribute("label") || 'Reveal';
+        revealButton.append(revealButtonInnerBtn);
+
+        revealButtonInnerBtn.addEventListener('click', function () {
+            revealCurrentCharacter();
+        });
+    }
+
+    if (restartButton) {
+        var restartButtonInnerBtn = document.createElement("button");
+        restartButtonInnerBtn.textContent = restartButton.getAttribute("label") || 'Restart Quiz';
+        restartButton.append(restartButtonInnerBtn);
+
+        restartButtonInnerBtn.addEventListener('click', function () {
+            restartQuiz();
+        });
+    }
 } else {
     console.log('Maobi: target div not found: #' + config.targetDiv);
-}
-
-if (revealButton) {
-    var revealButtonInnerBtn = document.createElement("button");
-    revealButtonInnerBtn.textContent = revealButton.getAttribute("label") || 'Reveal';
-    revealButton.append(revealButtonInnerBtn);
-
-    revealButtonInnerBtn.addEventListener('click', function () {
-        revealCurrentCharacter();
-    });
 }

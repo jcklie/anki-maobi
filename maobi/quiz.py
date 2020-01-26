@@ -21,6 +21,7 @@ PATH_FIELD_GRID = os.path.join(PATH_MAOBI, "field.svg")
 
 TARGET_DIV = "character-target-div"
 REVEAL_BUTTON = "reveal-character-btn"
+RESTART_BUTTON = "restart-quiz-btn"
 
 TEMPLATE = Template(
     """
@@ -45,7 +46,7 @@ TEMPLATE = Template(
     outline-offset: -1px;
 }
 
-#$reveal_button {
+#$reveal_button, #$restart_button {
     margin: 20px 0;
 }
 
@@ -65,6 +66,7 @@ onShownHook.push(function () {
         leniency: $leniency,
         targetDiv: '$target_div',
         revealButton: '$reveal_button',
+        restartButton: '$restart_button',
         showHintAfterMisses: $show_hint_after_misses,
     };
     
@@ -138,6 +140,7 @@ def maobi_hook(html: str, card: Card, context: str) -> str:
         "maobi_quiz_script": maobi_quiz_script,
         "target_div": TARGET_DIV,
         "reveal_button": REVEAL_BUTTON,
+        "restart_button": RESTART_BUTTON,
         "characters": characters,
         "tones": tones,
         "characters_data": characters_data,
