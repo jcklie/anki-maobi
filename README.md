@@ -185,6 +185,10 @@ Yes. I personally use a Wacom graphics tablet, e.g. the [Wacom Intuos](https://w
 - Quizzes with multiple characters work
 - Can configure after how many wrong strokes hints are displayed
 
+### 0.3.1
+
+- Added missing file to Anki package.
+
 ### 0.3.0
 
 - Refactor plugin code
