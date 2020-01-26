@@ -172,6 +172,7 @@ Yes. I personally use a Wacom graphics tablet, e.g. the [Wacom Intuos](https://w
 
 ### 0.4.0
 
+- Add optional reveal button
 - Quizzes with multiple characters work
 - Can configure after how many wrong strokes hints are displayed
 
