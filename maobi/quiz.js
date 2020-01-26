@@ -1,9 +1,12 @@
 var curCharacterIdx = -1;
 var curQuizDiv = undefined;
+var curWriter = undefined;
 var prevCharacterDivs = [];
 
 var CHAR_SPACING = 20;
 
+var revealAnimationInProgress = false;
+var revealButton = document.getElementById(config.revealButton);
 var targetDiv = document.getElementById(config.targetDiv);
 
 var TONE_COLORS = getToneColors();
@@ -37,6 +40,12 @@ function quizNextCharacter() {
                 repositionDivs()
             }, 50);
         }
+    } else {
+        try {
+            if (revealButton) revealButton.disabled = true;
+        } catch (e) {
+            console.error(e);
+        }
     }
 }
 
@@ -60,30 +69,53 @@ function repositionDivs() {
  * Creates and starts the HanziWriter quiz for a given character
  * @param character the character to quiz for
  * @param characterData stroke data
+ * @param targetDiv div that should be used for rendering the quiz
  * @param toneColor color of the tone
  * @param targetDiv div that should be used for rendering the quiz
  */
 function quizCharacter(character, characterData, toneColor, targetDiv) {
-    var writer = HanziWriter.create(targetDiv, character, {
+    curWriter = HanziWriter.create(targetDiv, character, {
         width: config.size,
         height: config.size,
         showCharacter: false,
         showOutline: false,
         highlightOnComplete: true,
         leniency: config.leniency,
+        padding: 0,
+        delayBetweenStrokes: 200,
         strokeColor: toneColor,
         showHintAfterMisses: config.showHintAfterMisses || Number.MAX_SAFE_INTEGER, // setting showHintAfterMisses to
         // false does not disable the feature
-        padding: 0,
         charDataLoader: function (char, onComplete) {
             onComplete(characterData);
         },
         onComplete: function (data) {
             // wait for HanziWriter finish animation
+            curWriter = undefined;
             setTimeout(quizNextCharacter, 200);
         }
     });
-    writer.quiz();
+    curWriter.quiz();
+}
+
+/**
+ * Stops the quiz, reveals the current character, and animates it. Then starts the quiz for this character again
+ */
+function revealCurrentCharacter() {
+    if (!revealAnimationInProgress) {
+        revealAnimationInProgress = true;
+        curWriter.showOutline();
+        curWriter.cancelQuiz();
+        curWriter.animateCharacter({
+            onComplete: function () {
+                setTimeout(function () {
+                    curWriter.hideCharacter();
+                    curWriter.quiz();
+                    revealAnimationInProgress = false;
+                }, 1000);
+            }
+        });
+    }
 }
 
 /**
@@ -110,4 +142,14 @@ if(targetDiv){
     quizNextCharacter();
 } else {
     console.log('Maobi: target div not found: #' + config.targetDiv);
+}
+
+if (revealButton) {
+    var revealButtonInnerBtn = document.createElement("button");
+    revealButtonInnerBtn.textContent = revealButton.getAttribute("label") || 'Reveal';
+    revealButton.append(revealButtonInnerBtn);
+
+    revealButtonInnerBtn.addEventListener('click', function () {
+        revealCurrentCharacter();
+    });
 }
