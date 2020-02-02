@@ -7,6 +7,8 @@ var CHAR_SPACING = 20;
 
 var revealAnimationInProgress = false;
 var restartQuizAnimationInProgress = false;
+var completedStrokes = 0;    //  number of completed strokes of the current quiz
+
 var revealButton = document.getElementById(config.revealButton);
 var restartButton = document.getElementById(config.restartButton);
 var targetDiv = document.getElementById(config.targetDiv);
@@ -15,12 +17,13 @@ var TONE_COLORS = getToneColors();
 
 /**
  * Starts the quiz for the next character and moves all previous characters to the left
+ * @param animation 'none' disables animations, 'default' uses a right-to-left fade-in, 'opacity' only animates opacity
  */
-function quizNextCharacter(showAnimation) {
-    if (curQuizDiv !== undefined) {
-        prevCharacterDivs.unshift(curQuizDiv);
-    }
+function quizNextCharacter(animation) {
     if (curCharacterIdx < data.characters.length - 1) {
+        if (curQuizDiv !== undefined) {
+            prevCharacterDivs.unshift(curQuizDiv);
+        }
         curCharacterIdx++;
         curQuizDiv = document.createElement("div");
         targetDiv.append(curQuizDiv);
@@ -31,9 +34,9 @@ function quizNextCharacter(showAnimation) {
         var toneColor = data.tones.length > 0 ? TONE_COLORS[data.tones[curCharacterIdx]] : '#555555';
         quizCharacter(character, characterData, toneColor, curQuizDiv);
 
-        if (showAnimation) {
+        if (animation !== 'none') {
             curQuizDiv.style.opacity = '0';
-            if (curCharacterIdx > 0) {
+            if (curCharacterIdx > 0 && animation === 'default') {
                 curQuizDiv.style['margin-left'] = Math.floor(config.size / 2) + CHAR_SPACING + 'px';
             }
 
@@ -90,11 +93,15 @@ function quizCharacter(character, characterData, toneColor, targetDiv) {
             // wait for HanziWriter finish animation
             curWriter = undefined;
             setTimeout(function () {
-                quizNextCharacter(true)
+                quizNextCharacter('default')
             }, 200);
-        }
+        },
+        onCorrectStroke: function(data){
+            completedStrokes = data.strokeNum + 1;
+        },
     });
     curWriter.quiz();
+    completedStrokes = 0;
 }
 
 /**
@@ -105,6 +112,7 @@ function revealCurrentCharacter() {
         revealAnimationInProgress = true;
         curWriter.showOutline();
         curWriter.cancelQuiz();
+        completedStrokes = 0;
         curWriter.animateCharacter({
             onComplete: function () {
                 setTimeout(function () {
@@ -139,35 +147,51 @@ function getToneColors() {
  */
 function restartQuiz() {
     if (!revealAnimationInProgress && !restartQuizAnimationInProgress) {
+        if(curWriter) curWriter.cancelQuiz();
         restartQuizAnimationInProgress = true;
 
-        // for convenience; applies a function on all character div elements (current and previous)
-        var applyAll = function (fn) {
-            if (curQuizDiv) fn(curQuizDiv);
-            for (var i = 0; i < prevCharacterDivs.length; i++) {
-                fn(prevCharacterDivs[i]);
-            }
-        };
+        // if no strokes of the current hanzi have been completed, we restart the whole quiz
+        if (completedStrokes === 0) {
+            // for convenience; applies a function on all character div elements (current and previous)
+            var applyAll = function (fn) {
+                if (curQuizDiv) fn(curQuizDiv);
+                for (var i = 0; i < prevCharacterDivs.length; i++) {
+                    fn(prevCharacterDivs[i]);
+                }
+            };
 
-        applyAll(function (e) {
-            e.style.opacity = '0';
-        });
-
-        // on complete after 300ms, which is the duration of the css animation
-        setTimeout(function () {
             applyAll(function (e) {
-                if (e.parentNode) e.parentNode.removeChild(e);
+                e.style.opacity = '0';
             });
 
-            restartQuizAnimationInProgress = false;
+            // on complete after 300ms, which is the duration of the css animation
+            setTimeout(function () {
+                applyAll(function (e) {
+                    if (e.parentNode) e.parentNode.removeChild(e);
+                });
 
-            curCharacterIdx = -1;
-            curWriter = undefined;
-            curQuizDiv = undefined;
-            prevCharacterDivs = [];
+                curCharacterIdx = -1;
+                curWriter = undefined;
+                curQuizDiv = undefined;
+                completedStrokes = 0;
+                prevCharacterDivs = [];
 
-            quizNextCharacter(true);
-        }, 300);
+                restartQuizAnimationInProgress = false;
+                quizNextCharacter('default');
+            }, 300);
+        } else {
+            // if some strokes of the current hanzi have been completed, only restart the current hanzi quiz
+            curQuizDiv.style.opacity = '0';
+            setTimeout(function(){
+                if (curQuizDiv.parentNode) curQuizDiv.parentNode.removeChild(curQuizDiv);
+                curCharacterIdx -= 1;
+                curQuizDiv = undefined;
+                completedStrokes = 0;
+
+                restartQuizAnimationInProgress = false;
+                quizNextCharacter('opacity');
+            }, 300);
+        }
     }
 }
 
@@ -175,7 +199,7 @@ function restartQuiz() {
 // Init
 // If there is no quiz div, we cannot start maobi
 if (targetDiv) {
-    quizNextCharacter(false);
+    quizNextCharacter('none');
 
     if (revealButton) {
         var revealButtonInnerBtn = document.createElement("button");
