@@ -82,7 +82,9 @@ In addition, an optional button may be inserted in the template to reveal the cu
 
     <div id="reveal-character-btn" label="Reveal"></div>
     
-Further, an optional button to restart the current quiz can be inserted:
+Further, an optional button to restart the current quiz can be inserted. This will restart the quiz
+of the current Hanzi if there are already completed strokes for this Hanzi, otherwise it will 
+restart the quizzes of all Hanzi in the current card:
 
     <div id="restart-quiz-btn" label="Restart Quiz"></div>
 
