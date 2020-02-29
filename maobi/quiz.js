@@ -5,7 +5,6 @@ var prevCharacterDivs = [];
 
 var CHAR_SPACING = 20;
 
-var revealAnimationInProgress = false;
 var restartQuizAnimationInProgress = false;
 var completedStrokes = 0;    //  number of completed strokes of the current quiz
 
@@ -108,18 +107,20 @@ function quizCharacter(character, characterData, toneColor, targetDiv) {
  * Stops the quiz, reveals the current character, and animates it. Then starts the quiz for this character again
  */
 function revealCurrentCharacter() {
-    if (curWriter !== undefined && !revealAnimationInProgress && !restartQuizAnimationInProgress) {
-        revealAnimationInProgress = true;
-        curWriter.showOutline();
-        curWriter.cancelQuiz();
+    if (curWriter !== undefined && !restartQuizAnimationInProgress) {
+        var writer = curWriter;
+        writer.showOutline();
+        writer.cancelQuiz();
         completedStrokes = 0;
-        curWriter.animateCharacter({
-            onComplete: function () {
-                setTimeout(function () {
-                    curWriter.hideCharacter();
-                    curWriter.quiz();
-                    revealAnimationInProgress = false;
-                }, 1000);
+        writer.animateCharacter({
+            onComplete: function (e) {
+                if (!e.canceled) {
+                    // if the animation has been canceled, we do not need to hide
+                    setTimeout(function () {
+                        writer.hideCharacter();
+                        writer.quiz();
+                    }, 1000);
+                }
             }
         });
     }
@@ -146,7 +147,7 @@ function getToneColors() {
  * Restarts the whole quiz (all characters
  */
 function restartQuiz() {
-    if (!revealAnimationInProgress && !restartQuizAnimationInProgress) {
+    if (!restartQuizAnimationInProgress) {
         if(curWriter) curWriter.cancelQuiz();
         restartQuizAnimationInProgress = true;
 
