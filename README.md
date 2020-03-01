@@ -81,6 +81,12 @@ on the question side. In its position, the quiz will be inserted.
 In addition, an optional button may be inserted in the template to reveal the current character's strokes:
 
     <div id="reveal-character-btn" label="Reveal"></div>
+    
+Further, an optional button to restart the current quiz can be inserted. This will restart the quiz
+of the current Hanzi if there are already completed strokes for this Hanzi, otherwise it will 
+restart the quizzes of all Hanzi in the current card:
+
+    <div id="restart-quiz-btn" label="Restart Quiz"></div>
 
 You can add or overwrite the default style by using the `character-target-div` id, by adding e.g.
 
