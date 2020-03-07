@@ -1,10 +1,17 @@
-from anki.hooks import addHook, wrap
+from anki.hooks import wrap
 
 
 def patch_quiz():
     from .quiz import maobi_hook
 
-    addHook("prepareQA", maobi_hook)
+    try:
+        # Anki >= 2.1.20
+        from aqt import gui_hooks
+        gui_hooks.card_will_show.append(maobi_hook)
+    except:
+        # Use the legacy hook instead
+        from anki.hooks import addHook
+        addHook("prepareQA", maobi_hook)
 
 
 def patch_config():
