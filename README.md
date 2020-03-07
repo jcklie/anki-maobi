@@ -188,7 +188,7 @@ Yes. I personally use a Wacom graphics tablet, e.g. the [Wacom Intuos](https://w
 <details><summary>Change log</summary>
 <p>
 
-### 0.4.0
+### 0.5.0
 
 - Add restart button
 - Fix for Anki 2.1.20
