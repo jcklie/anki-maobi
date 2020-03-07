@@ -185,6 +185,14 @@ Yes. I personally use a Wacom graphics tablet, e.g. the [Wacom Intuos](https://w
 
 ## Change log
 
+<details><summary>Change log</summary>
+<p>
+
+### 0.4.0
+
+- Add restart button
+- Fix for Anki 2.1.20
+
 ### 0.4.0
 
 - Add optional reveal button
@@ -219,6 +227,9 @@ Yes. I personally use a Wacom graphics tablet, e.g. the [Wacom Intuos](https://w
 ### 0.1.0 
 
 - First release
+
+</p>
+</details>
 
 ## License
 
