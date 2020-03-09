@@ -4,6 +4,8 @@ var curWriter = undefined;
 var prevCharacterDivs = [];
 
 var CHAR_SPACING = 20;
+var STROKE_COLOR_DAY = '#333';
+var STROKE_COLOR_NIGHT = '#FFF';
 
 var restartQuizAnimationInProgress = false;
 var completedStrokes = 0;    //  number of completed strokes of the current quiz
@@ -31,7 +33,9 @@ function quizNextCharacter(animation) {
         var character = data.characters[curCharacterIdx];
         var characterData = data.charactersData[curCharacterIdx];
         var toneColor = data.tones.length > 0 ? TONE_COLORS[data.tones[curCharacterIdx]] : '#555555';
-        quizCharacter(character, characterData, toneColor, curQuizDiv);
+        var drawingColor = document.body.classList.contains('nightMode') ? STROKE_COLOR_NIGHT : STROKE_COLOR_DAY;
+
+        quizCharacter(character, characterData, toneColor, drawingColor, curQuizDiv);
 
         if (animation !== 'none') {
             curQuizDiv.style.opacity = '0';
@@ -70,9 +74,10 @@ function repositionDivs() {
  * @param characterData stroke data
  * @param targetDiv div that should be used for rendering the quiz
  * @param toneColor color of the tone
+ * @param drawingColor color of the stroke the user draws
  * @param targetDiv div that should be used for rendering the quiz
  */
-function quizCharacter(character, characterData, toneColor, targetDiv) {
+function quizCharacter(character, characterData, toneColor, drawingColor, targetDiv) {
     curWriter = HanziWriter.create(targetDiv, character, {
         width: config.size,
         height: config.size,
@@ -83,6 +88,8 @@ function quizCharacter(character, characterData, toneColor, targetDiv) {
         padding: 0,
         delayBetweenStrokes: 200,
         strokeColor: toneColor,
+        drawingColor: drawingColor,
+        drawingWidth: 5,
         showHintAfterMisses: config.showHintAfterMisses || Number.MAX_SAFE_INTEGER, // setting showHintAfterMisses to
         // false does not disable the feature
         charDataLoader: function (char, onComplete) {
