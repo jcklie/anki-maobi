@@ -5,7 +5,7 @@ var prevCharacterDivs = [];
 
 var CHAR_SPACING = 20;
 var STROKE_COLOR_DAY = '#333';
-var STROKE_COLOR_NIGHT = '#FFF'; // Night mode reverses this to white
+var STROKE_COLOR_NIGHT = '#FFF';
 
 var restartQuizAnimationInProgress = false;
 var completedStrokes = 0;    //  number of completed strokes of the current quiz
