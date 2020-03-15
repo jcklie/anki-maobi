@@ -166,7 +166,7 @@ visit the *Hanzi Writer* website and look how nice it looks!
 ### Can this be used on mobile?
 
 Sadly, Anki desktop addons do not work on mobile. A workaround can be found [here](https://github.com/jcklie/anki-maobi/issues/20#issuecomment-578490050).
-It uses the hand-written input of the mobile keyboard. 
+It uses the hand-written input of the mobile keyboard. An alternative to try is using [this](https://github.com/infinyte7/Anki-maobi) by [infinyte7](https://github.com/infinyte7).
 
 ### Does this run offline?
 
