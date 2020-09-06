@@ -88,7 +88,7 @@ class MaobiException(Exception):
         super(MaobiException, self).__init__(message)
 
 
-def maobi_hook(html: str, card: Card, context: str) -> str:
+def maobi_review_hook(html: str, card: Card, context: str) -> str:
     # Only show the quiz on the front side, else it can lead to rendering issues
     if context not in {"reviewQuestion", "clayoutQuestion", "previewQuestion"}:
         return html
