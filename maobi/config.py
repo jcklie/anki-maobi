@@ -305,14 +305,6 @@ class MaobiConfigDialog(QDialog):
         return self._show_hint_after_misses.value()
 
 
-def maobi_add_config_button_legacy_patch(self):
-    maobi_button = QPushButton("Maobi")
-    maobi_button.setAutoDefault(False)
-    maobi_button.clicked.connect(lambda: MaobiConfigDialog(self))
-
-    self.buttons.insertWidget(4, maobi_button)
-
-
 def maobi_add_config_button_hook(cardlayout: CardLayout):
     maobi_button = QPushButton("Maobi")
     maobi_button.setAutoDefault(False)

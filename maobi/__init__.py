@@ -1,33 +1,30 @@
 from anki.hooks import wrap
 
+from anki.buildinfo import version
+
 
 def hook_quiz():
     from .quiz import maobi_review_hook
 
-    try:
-        # Anki >= 2.1.20
-        from aqt import gui_hooks
+    from aqt import gui_hooks
 
-        gui_hooks.card_will_show.append(maobi_review_hook)
-    except:
-        # Use the legacy hook instead
-        from anki.hooks import addHook
-
-        addHook("prepareQA", maobi_review_hook)
+    gui_hooks.card_will_show.append(maobi_review_hook)
 
 
 def hook_add_config_button():
-    try:
-        from aqt import gui_hooks
-        from .config import maobi_add_config_button_hook
+    from aqt import gui_hooks
+    from .config import maobi_add_config_button_hook
 
-        gui_hooks.card_layout_will_show.append(maobi_add_config_button_hook)
-    except:
-        from aqt.clayout import CardLayout
-        from .config import maobi_add_config_button_legacy_patch
-
-        CardLayout.setupButtons = wrap(CardLayout.setupButtons, maobi_add_config_button_legacy_patch)
+    gui_hooks.card_layout_will_show.append(maobi_add_config_button_hook)
 
 
-hook_quiz()
-hook_add_config_button()
+version = tuple(int(p) for p in version.split("."))
+required_version = (2, 1, 33)
+
+if version < required_version:
+    from maobi.util import error
+    error("Maobi needs a newer Anki version than installed! Minimum: " + str(required_version))
+else:
+    hook_quiz()
+    hook_add_config_button()
+
