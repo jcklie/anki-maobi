@@ -2,6 +2,7 @@ from collections import namedtuple
 from enum import Enum
 
 from aqt import mw
+from aqt.clayout import CardLayout
 from aqt.qt import *
 
 from .util import debug, error
@@ -89,9 +90,7 @@ class MaobiConfig:
         config = MaobiConfig(config_json)
         return config
 
-    def search_active_deck_config(
-        self, deck_name: str, template_name: str
-    ) -> "Optional[DeckConfig]":
+    def search_active_deck_config(self, deck_name: str, template_name: str) -> "Optional[DeckConfig]":
         """ Searches the active deck configuration.
         
         Returns:
@@ -135,11 +134,11 @@ class MaobiConfig:
 
 
 class MaobiConfigDialog(QDialog):
-    def __init__(self, parent, card):
+    def __init__(self, parent):
         super().__init__(parent)
 
         self._parent = parent
-        self._card = card
+        self._card_layout = parent
 
         self.setWindowTitle("Maobi Configuration")
 
@@ -180,7 +179,7 @@ class MaobiConfigDialog(QDialog):
         return checkBox
 
     def _build_field_combo_box(self) -> QComboBox:
-        fields = self._card.note().keys()
+        fields = self._card_layout.note.keys()
         comboBox = QComboBox()
         comboBox.addItems(fields)
         return comboBox
@@ -222,7 +221,7 @@ class MaobiConfigDialog(QDialog):
     def _accept(self):
         self._save_config()
         self.close()
-        self._parent.redraw()
+        self._parent.redraw_everything()
 
     def _reject(self):
         self.close()
@@ -264,14 +263,7 @@ class MaobiConfigDialog(QDialog):
         show_hint_after_misses = self._show_hint_after_misses_value()
 
         new_deck_config = DeckConfig(
-            deck_name,
-            template_name,
-            field_name,
-            grid,
-            size,
-            leniency,
-            enabled,
-            show_hint_after_misses,
+            deck_name, template_name, field_name, grid, size, leniency, enabled, show_hint_after_misses,
         )
 
         # Remove the old config if it existed, then add the new one
@@ -291,7 +283,7 @@ class MaobiConfigDialog(QDialog):
         return mw.col.decks.current()["name"]
 
     def _template_name(self) -> str:
-        return self._card.template()["name"]
+        return self._card_layout.current_template()["name"]
 
     def _field_name(self) -> str:
         return self._field.currentText()
@@ -313,9 +305,9 @@ class MaobiConfigDialog(QDialog):
         return self._show_hint_after_misses.value()
 
 
-def add_maobi_button(self):
+def maobi_add_config_button_hook(cardlayout: CardLayout):
     maobi_button = QPushButton("Maobi")
     maobi_button.setAutoDefault(False)
-    maobi_button.clicked.connect(lambda: MaobiConfigDialog(self, self.card))
+    maobi_button.clicked.connect(lambda: MaobiConfigDialog(cardlayout))
 
-    self.buttons.insertWidget(4, maobi_button)
+    cardlayout.buttons.insertWidget(4, maobi_button)
