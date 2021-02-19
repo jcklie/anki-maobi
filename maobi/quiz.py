@@ -156,7 +156,7 @@ def maobi_review_hook(html: str, card: Card, context: str) -> str:
 
 
 def _get_characters(card: Card, config: DeckConfig) -> tuple:
-    """ Extracts the characters to write from `card`.
+    """ Extracts the characters to write from `card`. Ignores punctuation and non-chinese characters.
 
     Returns:
         characters (tuple[list[str], list[str])): The characters contained in field `config.field` of `card`, and
@@ -186,15 +186,23 @@ def _get_characters(card: Card, config: DeckConfig) -> tuple:
     if "span" in characters_html:
         # this is the 'colors' field which has tone information as tone1...4 css classes
         tones = list(re.findall("tone[12345]", characters_html))
-
     if len(tones) != len(characters):
         tones = []
 
+    # filter out non-chinese characters
+    non_chinese_chars = re.finditer(r"[^\u4E00-\u9FD0]", characters)
+    characters_list = list(characters)
+    for char_match in reversed(list(non_chinese_chars)):
+        del_idx = char_match.start()
+        del characters_list[del_idx]
+        if len(tones) > 0:
+            del tones[del_idx]
+
     # Check that the character is one or more characters
-    if len(characters) == 0:
+    if len(characters_list) == 0:
         raise MaobiException(f"Field '{field_name}' was empty!")
 
-    return [c for c in characters], tones
+    return [c for c in characters_list], tones
 
 
 def _load_character_data(character: str) -> str:
