@@ -191,6 +191,7 @@ Yes. I personally use a Wacom graphics tablet, e.g. the [Wacom Intuos](https://w
 ### 0.5.2
 
 - Filter non-Chinese characters
+- Adjust stroke color to night mode
 
 ### 0.5.1
 
