@@ -32,8 +32,8 @@ function quizNextCharacter(animation) {
 
         var character = data.characters[curCharacterIdx];
         var characterData = data.charactersData[curCharacterIdx];
-        var toneColor = data.tones.length > 0 ? TONE_COLORS[data.tones[curCharacterIdx]] : '#555555';
         var drawingColor = document.body.classList.contains('nightMode') ? STROKE_COLOR_NIGHT : STROKE_COLOR_DAY;
+        var toneColor = data.tones.length > 0 ? TONE_COLORS[data.tones[curCharacterIdx]] : drawingColor;
 
         quizCharacter(character, characterData, toneColor, drawingColor, curQuizDiv);
 
