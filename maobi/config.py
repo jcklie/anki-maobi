@@ -1,5 +1,6 @@
 from collections import namedtuple
 from enum import Enum
+from typing import Optional
 
 from aqt import mw
 from aqt.clayout import CardLayout
@@ -159,7 +160,7 @@ class MaobiConfigDialog(QDialog):
         layout.addRow(QLabel("Show hint after misses:"), self._show_hint_after_misses)
         formGroupBox.setLayout(layout)
 
-        buttonBox = QDialogButtonBox(QDialogButtonBox.Ok | QDialogButtonBox.Cancel)
+        buttonBox = QDialogButtonBox(QDialogButtonBox.StandardButton.Ok | QDialogButtonBox.StandardButton.Cancel)
         buttonBox.accepted.connect(self._accept)
         buttonBox.rejected.connect(self._reject)
 
@@ -203,10 +204,10 @@ class MaobiConfigDialog(QDialog):
         return spinBox
 
     def _build_leniency_slider(self) -> QSlider:
-        slider = QSlider(Qt.Horizontal)
+        slider = QSlider(Qt.Orientation.Horizontal)
         slider.setMinimum(0)
         slider.setMaximum(2 * MaobiConfig.DEFAULT_LENIENCY)
-        slider.setTickPosition(QSlider.TicksBelow)
+        slider.setTickPosition(QSlider.TickPosition.TicksBelow)
         slider.setTickInterval(MaobiConfig.DEFAULT_LENIENCY)
         slider.setValue(MaobiConfig.DEFAULT_LENIENCY)
         return slider
