@@ -194,6 +194,10 @@ Yes. I personally use a Wacom graphics tablet, e.g. the [Wacom Intuos](https://w
 <details><summary>Change log</summary>
 <p>
 
+### 0.6.0
+
+- Adapt to PyQt 6
+
 ### 0.5.2
 
 - Filter non-Chinese characters
