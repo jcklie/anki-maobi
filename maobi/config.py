@@ -27,7 +27,7 @@ class GridTypes(Enum):
 
 
 class DeckConfig:
-    """ DeckConfig is the Maobi config for a specific deck. """
+    """DeckConfig is the Maobi config for a specific deck."""
 
     def __init__(
         self,
@@ -60,7 +60,7 @@ class DeckConfig:
 
 
 class MaobiConfig:
-    """ MaobiConfig is the config as loaded from config.json. """
+    """MaobiConfig is the config as loaded from config.json."""
 
     DEFAULT_SIZE = 200
     DEFAULT_GRID = GridTypes.RICE.value
@@ -81,7 +81,9 @@ class MaobiConfig:
                 e.get("size", MaobiConfig.DEFAULT_SIZE),
                 e.get("leniency", MaobiConfig.DEFAULT_LENIENCY),
                 e.get("enabled", MaobiConfig.DEFAULT_ENABLED),
-                e.get("show_hint_after_misses", MaobiConfig.DEFAULT_SHOW_HINT_AFTER_MISSES),
+                e.get(
+                    "show_hint_after_misses", MaobiConfig.DEFAULT_SHOW_HINT_AFTER_MISSES
+                ),
             )
             self.decks.add(deck_config)
 
@@ -91,9 +93,11 @@ class MaobiConfig:
         config = MaobiConfig(config_json)
         return config
 
-    def search_active_deck_config(self, deck_name: str, template_name: str) -> "Optional[DeckConfig]":
-        """ Searches the active deck configuration.
-        
+    def search_active_deck_config(
+        self, deck_name: str, template_name: str
+    ) -> "Optional[DeckConfig]":
+        """Searches the active deck configuration.
+
         Returns:
             The active deck configuration if maobi is active for this card else `None`.
 
@@ -105,7 +109,8 @@ class MaobiConfig:
                 return e
         else:
             debug(
-                self, f"No configuration found for: '{deck_name}' and template '{template_name}",
+                self,
+                f"No configuration found for: '{deck_name}' and template '{template_name}",
             )
             return None
 
@@ -160,7 +165,9 @@ class MaobiConfigDialog(QDialog):
         layout.addRow(QLabel("Show hint after misses:"), self._show_hint_after_misses)
         formGroupBox.setLayout(layout)
 
-        buttonBox = QDialogButtonBox(QDialogButtonBox.StandardButton.Ok | QDialogButtonBox.StandardButton.Cancel)
+        buttonBox = QDialogButtonBox(
+            QDialogButtonBox.StandardButton.Ok | QDialogButtonBox.StandardButton.Cancel
+        )
         buttonBox.accepted.connect(self._accept)
         buttonBox.rejected.connect(self._reject)
 
@@ -264,7 +271,14 @@ class MaobiConfigDialog(QDialog):
         show_hint_after_misses = self._show_hint_after_misses_value()
 
         new_deck_config = DeckConfig(
-            deck_name, template_name, field_name, grid, size, leniency, enabled, show_hint_after_misses,
+            deck_name,
+            template_name,
+            field_name,
+            grid,
+            size,
+            leniency,
+            enabled,
+            show_hint_after_misses,
         )
 
         # Remove the old config if it existed, then add the new one

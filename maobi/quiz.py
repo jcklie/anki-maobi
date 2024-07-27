@@ -1,5 +1,6 @@
 import json
 import os
+import re
 from string import Template
 from urllib.parse import quote
 from zipfile import ZipFile
@@ -7,9 +8,8 @@ from zipfile import ZipFile
 from anki.cards import Card
 from anki.utils import stripHTML
 from aqt import mw
-import re
 
-from .config import GridType, DeckConfig, MaobiConfig
+from .config import DeckConfig, GridType, MaobiConfig
 from .util import debug, error
 
 PATH_MAOBI = os.path.dirname(os.path.realpath(__file__))
@@ -156,14 +156,14 @@ def maobi_review_hook(html: str, card: Card, context: str) -> str:
 
 
 def _get_characters(card: Card, config: DeckConfig) -> tuple:
-    """ Extracts the characters to write from `card`. Ignores punctuation and non-chinese characters.
+    """Extracts the characters to write from `card`. Ignores punctuation and non-chinese characters.
 
     Returns:
         characters (tuple[list[str], list[str])): The characters contained in field `config.field` of `card`, and
         possibly the tones (extracted from css classes)
 
     Raises:
-        MaobiException: 
+        MaobiException:
             - If there is no field called `deck.field` in `card`.
             - If the field called `config.field` is empty.
             - If the field called `config.field` contains more than one character.
@@ -176,7 +176,9 @@ def _get_characters(card: Card, config: DeckConfig) -> tuple:
     field_name = config.field
 
     if field_name not in note:
-        raise MaobiException(f"There is no field '{field_name}' in note type {note_type}!")
+        raise MaobiException(
+            f"There is no field '{field_name}' in note type {note_type}!"
+        )
 
     characters_html = note[field_name]
     characters = stripHTML(characters_html)
@@ -206,11 +208,11 @@ def _get_characters(card: Card, config: DeckConfig) -> tuple:
 
 
 def _load_character_data(character: str) -> str:
-    """ Reads the character data for `character` from `characters.zip`.
+    """Reads the character data for `character` from `characters.zip`.
 
     Returns:
         character_data (str): The character data for `character`.
-    
+
     Raises:
         MaobiException: If data for `character` was not found.
 
@@ -227,9 +229,9 @@ def _load_character_data(character: str) -> str:
 
 
 def _build_hanzi_grid_style(grid_type: GridType) -> str:
-    """ Generate the JavaScript snippet that sets the background specified by `background_type`.
+    """Generate the JavaScript snippet that sets the background specified by `background_type`.
 
-    Right now, legal values for `background_type` are "rice" or "field". The SVG itself is generated 
+    Right now, legal values for `background_type` are "rice" or "field". The SVG itself is generated
     with `scripts/generate_hanzi_grids.py`.
     """
 
@@ -259,7 +261,7 @@ def _build_hanzi_grid_style(grid_type: GridType) -> str:
 
 
 def _build_error_message(html: str, message: str) -> str:
-    """ Constructs the HTML for an error text with message `message` over the original html. """
+    """Constructs the HTML for an error text with message `message` over the original html."""
     return f"""<p style="text-align: center; color: red; font-size: large;">
 Maobi encountered an error: <br />
 {message}
