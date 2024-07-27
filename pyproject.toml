@@ -1,0 +1,19 @@
+[tool.poetry]
+name = "anki-maobi"
+version = "0.6.0-dev"
+description = "máobĭ (毛笔) is an Anki add-on to create cards with writing quizzes for Hanzi (Chinese characters)"
+authors = ["Jan-Christoph Klie  <git@mrklie.com>"]
+license = "MIT license"
+readme = "README.md"
+packages = [{include = "anki_maobi"}]
+package-mode = false
+
+[tool.poetry.dependencies]
+python = ">=3.10,<4"
+ruff = "^0.5.5"
+aqt = {extras = ["qt6"], version = "^24.6.3"}
+
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"

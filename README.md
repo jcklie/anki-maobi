@@ -143,7 +143,13 @@ well-tested. If you have feature requests or encounter bugs, please open an issu
 
 ## Development
 
+You can import this repository as a `poetry` package in the IDE of your choice. To test it with Anki,
 I checkout this repository into my `git` folder, then symlink the `maobi` folder into `${AnkiData}\addons21`.
+
+```
+# Windows (as root)
+New-Item -ItemType SymbolicLink -Path C:\Users\klie\AppData\Roaming\Anki2\addons21\maobi -Target D:\git\anki-maobi\maobi\
+```
 
 ## Contributing
 
